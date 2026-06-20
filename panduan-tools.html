@@ -1,0 +1,2799 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Panduan Tools AI — BelajarLagi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,300;0,14..32,400;0,14..32,500;0,14..32,600;0,14..32,700;0,14..32,800;0,14..32,900;1,14..32,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ===== TOKENS ===== */
+:root {
+  --red: #E53E3E;
+  --red-dark: #C53030;
+  --red-light: #FFF5F5;
+  --red-mid: #FED7D7;
+  --blue: #2563EB;
+  --blue-light: #EFF6FF;
+  --blue-mid: #BFDBFE;
+  --green: #16A34A;
+  --green-light: #F0FDF4;
+  --green-mid: #BBF7D0;
+  --amber: #B45309;
+  --amber-light: #FFFBEB;
+  --amber-mid: #FDE68A;
+  --bg: #F8FAFC;
+  --surface: #fff;
+  --text: #0F172A;
+  --text2: #4A5568;
+  --text3: #94A3B8;
+  --border: #E2E8F0;
+  --border-light: #F1F5F9;
+  --sw: 280px;
+  --hh: 56px;
+  --radius: 12px;
+  --radius-sm: 8px;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04);
+  --shadow-md: 0 4px 12px rgba(0,0,0,.08), 0 2px 4px rgba(0,0,0,.04);
+}
+
+/* ===== RESET ===== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ===== PROGRESS BAR ===== */
+#progress-bar {
+  position: fixed;
+  top: var(--hh);
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: transparent;
+  z-index: 300;
+}
+#progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--red), #F56565);
+  width: 0%;
+  transition: width .1s linear;
+  border-radius: 0 2px 2px 0;
+}
+
+/* ===== TOPBAR ===== */
+.topbar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: var(--hh);
+  background: rgba(255,255,255,.95);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  gap: 12px;
+  z-index: 200;
+  box-shadow: var(--shadow-sm);
+}
+.tl { display: flex; align-items: center; gap: 8px; text-decoration: none; flex-shrink: 0; }
+.tlm {
+  width: 30px; height: 30px;
+  background: var(--red);
+  border-radius: var(--radius-sm);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 900; color: #fff;
+  box-shadow: 0 2px 8px rgba(229,62,62,.35);
+}
+.tlt { font-size: 14px; font-weight: 800; color: var(--text); letter-spacing: -.3px; }
+.tsep { width: 1px; height: 20px; background: var(--border); }
+.tc { font-size: 13px; font-weight: 500; color: var(--text2); flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tbadge {
+  font-size: 10px; font-weight: 700; padding: 3px 10px;
+  border-radius: 99px; background: var(--red-light); color: var(--red);
+  letter-spacing: .4px; text-transform: uppercase; flex-shrink: 0;
+  border: 1px solid var(--red-mid);
+}
+.tmenu {
+  display: none; align-items: center; justify-content: center;
+  width: 36px; height: 36px; border-radius: var(--radius-sm);
+  border: 1px solid var(--border); cursor: pointer;
+  font-size: 18px; background: var(--surface);
+  transition: background .15s;
+  flex-shrink: 0;
+}
+.tmenu:hover { background: var(--bg); }
+
+/* ===== OVERLAY ===== */
+.overlay {
+  display: none;
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,.45);
+  z-index: 150;
+  backdrop-filter: blur(2px);
+}
+.overlay.show { display: block; }
+
+/* ===== LAYOUT ===== */
+.layout { display: flex; padding-top: var(--hh); min-height: 100vh; }
+
+/* ===== SIDEBAR ===== */
+.sidebar {
+  width: var(--sw);
+  position: fixed; top: var(--hh); left: 0; bottom: 0;
+  overflow-y: auto;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  padding: 12px 0 80px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-light) transparent;
+  z-index: 160;
+}
+.sidebar::-webkit-scrollbar { width: 3px; }
+.sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 99px; }
+
+.sg {
+  font-size: 10px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 1.2px; color: var(--text3);
+  padding: 18px 16px 6px;
+  display: flex; align-items: center; gap: 8px;
+}
+.sg:first-child { padding-top: 8px; }
+.sg-icon {
+  width: 22px; height: 22px; border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; flex-shrink: 0;
+}
+
+.sdiv {
+  margin: 16px 16px 6px;
+  display: flex; align-items: center; gap: 8px;
+  font-size: 9px; font-weight: 800; text-transform: uppercase;
+  letter-spacing: 1.2px; color: var(--red);
+}
+.sdiv::before, .sdiv::after {
+  content: ''; flex: 1; height: 1px;
+  background: var(--red); opacity: .3;
+}
+
+.si {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 8px 14px 8px 16px;
+  cursor: pointer; transition: background .12s;
+  border-left: 3px solid transparent;
+  text-decoration: none; color: inherit;
+  border-radius: 0;
+}
+.si:hover { background: var(--bg); }
+.si.active {
+  background: linear-gradient(90deg, var(--red-light), transparent);
+  border-left-color: var(--red);
+}
+.si.active .sit { color: var(--red); font-weight: 600; }
+.snum {
+  width: 22px; height: 22px; border-radius: 6px;
+  background: var(--bg); border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; font-weight: 700; color: var(--text3);
+  flex-shrink: 0; margin-top: 2px;
+}
+.si.active .snum {
+  background: var(--red); border-color: var(--red); color: #fff;
+  box-shadow: 0 2px 6px rgba(229,62,62,.35);
+}
+.sit { font-size: 13px; font-weight: 500; color: var(--text); line-height: 1.35; }
+.sis { font-size: 11px; color: var(--text3); margin-top: 2px; }
+
+/* ===== MAIN ===== */
+.main { margin-left: var(--sw); flex: 1; min-width: 0; }
+
+/* ===== CHAPTER ===== */
+.ch { display: none; max-width: 720px; margin: 0 auto; padding: 48px 44px 100px; }
+.ch.show { display: block; }
+
+.eyebrow {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 11px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 1px; color: var(--red); margin-bottom: 12px;
+}
+.ed { width: 5px; height: 5px; border-radius: 50%; background: var(--red); }
+
+.chtitle {
+  font-size: 32px; font-weight: 900;
+  letter-spacing: -.8px; line-height: 1.12; margin-bottom: 10px;
+}
+.chsub {
+  font-size: 16px; color: var(--text2); line-height: 1.7;
+  margin-bottom: 24px; max-width: 580px;
+}
+.chmeta {
+  display: flex; align-items: center; gap: 14px;
+  padding: 12px 0; border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 40px; flex-wrap: wrap;
+}
+.cmi {
+  display: flex; align-items: center; gap: 5px;
+  font-size: 12px; color: var(--text3); font-weight: 500;
+}
+.badge {
+  display: inline-flex; align-items: center;
+  font-size: 10.5px; font-weight: 700; padding: 3px 10px;
+  border-radius: 99px; letter-spacing: .2px;
+}
+.br { background: var(--red-light); color: var(--red); border: 1px solid var(--red-mid); }
+.bb { background: var(--blue-light); color: var(--blue); border: 1px solid var(--blue-mid); }
+.bg { background: var(--green-light); color: var(--green); border: 1px solid var(--green-mid); }
+.bk { background: var(--bg); color: var(--text2); border: 1px solid var(--border); }
+
+/* ===== PROSE ===== */
+.prose h2 {
+  font-size: 20px; font-weight: 800; letter-spacing: -.4px;
+  margin: 44px 0 12px; scroll-margin-top: 76px; line-height: 1.25;
+}
+.prose h2:first-child { margin-top: 0; }
+.prose h3 {
+  font-size: 16px; font-weight: 700; margin: 28px 0 8px;
+  scroll-margin-top: 76px; color: var(--text); line-height: 1.35;
+}
+.prose p {
+  font-size: 15.5px; line-height: 1.8; color: #1E293B; margin-bottom: 16px;
+}
+.prose ul, .prose ol {
+  padding-left: 22px; margin-bottom: 16px;
+}
+.prose li {
+  font-size: 15.5px; line-height: 1.75; color: #1E293B; margin-bottom: 7px;
+}
+.prose li:last-child { margin-bottom: 0; }
+.prose strong { font-weight: 700; color: var(--text); }
+.prose a {
+  color: var(--blue); text-decoration: underline;
+  text-underline-offset: 3px; text-decoration-color: var(--blue-mid);
+  transition: text-decoration-color .15s;
+}
+.prose a:hover { text-decoration-color: var(--blue); }
+.prose code {
+  font-family: 'JetBrains Mono', 'SF Mono', monospace;
+  font-size: 13px; background: #F1F5F9; border: 1px solid var(--border);
+  padding: 2px 6px; border-radius: 5px; color: var(--red-dark);
+  font-weight: 500;
+}
+.prose pre {
+  background: #0F172A;
+  border-radius: var(--radius);
+  padding: 20px 22px;
+  overflow-x: auto;
+  margin: 22px 0;
+  box-shadow: var(--shadow-md);
+  -webkit-overflow-scrolling: touch;
+  border: 1px solid #1E293B;
+}
+.prose pre code {
+  background: none; border: none; padding: 0;
+  color: #E2E8F0; font-size: 13px; line-height: 1.75;
+  font-weight: 400; white-space: pre;
+}
+.prose hr { border: none; border-top: 1px solid var(--border); margin: 44px 0; }
+
+/* ===== TABLE ===== */
+.tbl-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 22px 0; border-radius: var(--radius); border: 1px solid var(--border); }
+.tbl { width: 100%; border-collapse: collapse; font-size: 14px; min-width: 380px; }
+.tbl th {
+  background: var(--bg); padding: 10px 14px;
+  text-align: left; font-weight: 700; font-size: 12px;
+  color: var(--text2); border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+.tbl td {
+  padding: 10px 14px; border-bottom: 1px solid var(--border-light);
+  color: var(--text); vertical-align: top; line-height: 1.55;
+}
+.tbl tr:last-child td { border-bottom: none; }
+.tbl tr:hover td { background: #FAFBFC; }
+/* Tables inside prose that don't have wrap div */
+.prose table { width: 100%; border-collapse: collapse; margin: 22px 0; font-size: 14px; }
+.prose table th {
+  background: var(--bg); padding: 10px 14px;
+  text-align: left; font-weight: 700; font-size: 12px;
+  color: var(--text2); border-bottom: 1px solid var(--border);
+}
+.prose table td {
+  padding: 10px 14px; border-bottom: 1px solid var(--border-light);
+  color: var(--text); vertical-align: top; line-height: 1.55;
+}
+.prose table tr:last-child td { border-bottom: none; }
+.prose table tr:hover td { background: #FAFBFC; }
+
+/* ===== CALLOUT BOXES ===== */
+.box {
+  border-radius: var(--radius); padding: 16px 18px;
+  margin: 24px 0; display: flex; gap: 12px; align-items: flex-start;
+}
+.bi { font-size: 18px; flex-shrink: 0; margin-top: 1px; line-height: 1; }
+.bb2 { flex: 1; min-width: 0; }
+.bt { font-size: 13px; font-weight: 700; margin-bottom: 4px; }
+.bx { font-size: 14px; line-height: 1.65; }
+
+.box.tip { background: var(--green-light); border: 1px solid var(--green-mid); }
+.box.tip .bt { color: #15803D; }
+.box.tip .bx { color: #166534; }
+
+.box.info { background: var(--blue-light); border: 1px solid var(--blue-mid); }
+.box.info .bt { color: var(--blue); }
+.box.info .bx { color: #1E40AF; }
+
+.box.warn { background: var(--amber-light); border: 1px solid var(--amber-mid); }
+.box.warn .bt { color: var(--amber); }
+.box.warn .bx { color: #92400E; }
+
+.box.danger { background: var(--red-light); border: 1px solid var(--red-mid); }
+.box.danger .bt { color: var(--red-dark); }
+.box.danger .bx { color: var(--red-dark); }
+
+/* ===== STEPS ===== */
+.steps { margin: 24px 0; }
+.step {
+  display: flex; gap: 14px; margin-bottom: 16px;
+  align-items: flex-start;
+}
+.step:last-child { margin-bottom: 0; }
+.stn {
+  width: 28px; height: 28px; border-radius: 50%;
+  background: var(--red); color: #fff;
+  font-size: 12px; font-weight: 800;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; margin-top: 1px;
+  box-shadow: 0 2px 6px rgba(229,62,62,.3);
+}
+.stb { flex: 1; min-width: 0; }
+.stt { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+.stx { font-size: 14px; line-height: 1.7; color: var(--text2); }
+.stx pre { margin: 10px 0; }
+.stx code {
+  font-family: 'JetBrains Mono', 'SF Mono', monospace;
+  font-size: 12.5px; background: #F1F5F9; border: 1px solid var(--border);
+  padding: 2px 6px; border-radius: 5px; color: var(--red-dark);
+}
+
+/* ===== CARDS ===== */
+.grid2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px; margin: 24px 0;
+}
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px 16px;
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow .2s, transform .2s;
+}
+.card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
+}
+.card-icon { font-size: 24px; margin-bottom: 10px; line-height: 1; }
+.card-title { font-size: 13.5px; font-weight: 700; color: var(--text); margin-bottom: 5px; }
+.card-text { font-size: 13px; line-height: 1.6; color: var(--text2); }
+
+/* ===== SCREEN MOCK ===== */
+.screen {
+  background: #1E293B; border-radius: var(--radius);
+  margin: 22px 0; overflow: hidden;
+  box-shadow: 0 8px 30px rgba(0,0,0,.18);
+  border: 1px solid #334155;
+}
+.screen-bar {
+  background: #334155; padding: 10px 16px;
+  display: flex; align-items: center; gap: 7px;
+}
+.screen-dot { width: 10px; height: 10px; border-radius: 50%; }
+.screen-url {
+  background: #475569; border-radius: 6px;
+  padding: 4px 14px; font-size: 11.5px; color: #94A3B8;
+  flex: 1; text-align: center;
+  font-family: 'JetBrains Mono', monospace;
+}
+.screen-body {
+  padding: 18px 20px;
+  font-size: 13px; line-height: 1.7; color: #CBD5E1;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* ===== CHAPTER NAV ===== */
+.chnav {
+  display: flex; justify-content: space-between;
+  gap: 12px; margin-top: 56px; padding-top: 28px;
+  border-top: 1px solid var(--border);
+}
+.chnbtn {
+  display: flex; align-items: center; gap: 10px;
+  padding: 14px 18px; border: 1px solid var(--border);
+  border-radius: var(--radius); cursor: pointer;
+  color: var(--text); background: var(--surface);
+  transition: all .2s; max-width: 46%;
+  box-shadow: var(--shadow-sm);
+  text-decoration: none;
+}
+.chnbtn:hover {
+  border-color: var(--red);
+  box-shadow: 0 4px 16px rgba(229,62,62,.12);
+  transform: translateY(-1px);
+}
+.chnbtn.next { margin-left: auto; text-align: right; }
+.chnbtn-arrow { font-size: 18px; color: var(--text3); flex-shrink: 0; }
+.chnl { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .8px; color: var(--text3); }
+.chnt { font-size: 13px; font-weight: 600; color: var(--text); line-height: 1.35; margin-top: 2px; }
+
+/* ===== HIGHLIGHT & TAG ===== */
+.hl { background: #FEF9C3; border-radius: 3px; padding: 0 4px; }
+.tag {
+  display: inline-block; font-size: 11.5px; font-weight: 600;
+  padding: 2px 8px; border-radius: 5px;
+  background: var(--bg); border: 1px solid var(--border);
+  color: var(--text2);
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* ===== MOBILE ===== */
+@media (max-width: 768px) {
+  :root { --sw: 0px; }
+
+  .tmenu { display: flex; }
+  .sidebar {
+    width: 288px;
+    transform: translateX(-288px);
+    transition: transform .28s cubic-bezier(.4,0,.2,1);
+  }
+  .sidebar.open { transform: translateX(0); }
+
+  .ch { padding: 28px 20px 80px; }
+  .chtitle { font-size: 26px; }
+  .chsub { font-size: 15px; }
+  .prose h2 { font-size: 18px; }
+  .prose h3 { font-size: 15px; }
+  .prose p, .prose li { font-size: 15px; }
+
+  .grid2 { grid-template-columns: 1fr; gap: 10px; }
+
+  .chnav { flex-direction: column; gap: 10px; }
+  .chnbtn, .chnbtn.next {
+    max-width: 100%; margin-left: 0;
+    text-align: left;
+  }
+
+  /* Table scroll on mobile */
+  .prose table { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
+  /* Topbar: hide title text on very small screens */
+  .tc, .credit { display: none; }
+  .tbadge { display: none; }
+
+  /* Bigger touch targets for sidebar items */
+  .si { padding: 10px 14px 10px 16px; }
+}
+
+@media (max-width: 480px) {
+  .chtitle { font-size: 22px; }
+  .ch { padding: 24px 16px 72px; }
+  .prose pre { padding: 16px; font-size: 12px; margin: 16px -16px; border-radius: 0; }
+  .box { padding: 14px 15px; }
+}
+
+/* ===== CHAPTER FADE ===== */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.ch.show { animation: fadeIn .25s ease; }
+
+/* ===== IMPROVED PROSE ===== */
+.prose p { font-size: 16px; line-height: 1.85; color: #1E293B; margin-bottom: 18px; }
+.prose li { font-size: 16px; line-height: 1.8; color: #1E293B; margin-bottom: 8px; }
+.prose ul, .prose ol { padding-left: 24px; margin-bottom: 20px; }
+.prose h2 {
+  font-size: 20px; font-weight: 800; letter-spacing: -.4px;
+  margin: 52px 0 14px; scroll-margin-top: 76px; line-height: 1.25;
+  padding-left: 14px;
+  border-left: 3px solid var(--red);
+}
+.prose h2:first-child { margin-top: 0; }
+.prose h3 {
+  font-size: 16px; font-weight: 700; margin: 32px 0 10px;
+  scroll-margin-top: 76px; color: var(--text); line-height: 1.35;
+}
+
+/* ===== CODE BLOCK WITH HEADER ===== */
+.code-block-wrap { position: relative; margin: 22px 0; }
+.code-block-bar {
+  display: flex; align-items: center; justify-content: space-between;
+  background: #1E293B; border-radius: var(--radius) var(--radius) 0 0;
+  padding: 8px 16px;
+  border: 1px solid #334155; border-bottom: none;
+}
+.code-lang {
+  font-size: 11px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 1px; color: #64748B;
+  font-family: 'JetBrains Mono', monospace;
+}
+.copy-btn {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 11.5px; font-weight: 600; color: #64748B;
+  background: none; border: 1px solid #334155;
+  border-radius: 6px; padding: 4px 10px;
+  cursor: pointer; transition: all .15s;
+  font-family: 'Inter', sans-serif;
+}
+.copy-btn:hover { color: #E2E8F0; border-color: #475569; background: #334155; }
+.copy-btn.copied { color: #4ADE80; border-color: #166534; }
+.code-block-wrap .prose pre,
+.code-block-wrap pre {
+  margin: 0;
+  border-radius: 0 0 var(--radius) var(--radius);
+  border-top: none;
+}
+
+
+/* ===== CHAPTER COUNTER ===== */
+.tprogress {
+  display: flex; align-items: center; gap: 4px;
+  font-size: 11.5px; font-weight: 700; color: var(--text3);
+  flex-shrink: 0; letter-spacing: .2px;
+  padding: 3px 10px; border-radius: 99px;
+  background: var(--bg); border: 1px solid var(--border);
+}
+.tprogress span { color: var(--red); }
+
+.credit {
+  font-size: 11px; font-weight: 500; color: var(--text3);
+  text-decoration: none; flex-shrink: 0;
+  margin-right: 6px;
+  transition: color .15s;
+}
+.credit:hover { color: var(--red); }
+
+/* ===== BETTER TABLES ===== */
+.tbl tr:nth-child(even) td { background: #FAFBFD; }
+.tbl tr:nth-child(even):hover td { background: #F6F8FA; }
+
+/* ===== BETTER CALLOUTS ===== */
+.box { border-radius: var(--radius); padding: 18px 20px; margin: 28px 0; }
+.bi { font-size: 20px; flex-shrink: 0; margin-top: 0; line-height: 1; }
+.bx { font-size: 14.5px; line-height: 1.7; }
+
+/* ===== BETTER STEP BOXES ===== */
+.stx { font-size: 14.5px; line-height: 1.75; color: var(--text2); }
+.stt { font-size: 14.5px; font-weight: 700; color: var(--text); margin-bottom: 5px; }
+
+/* ===== BETTER CHAPTER NAV ===== */
+.chnbtn {
+  padding: 16px 20px;
+}
+.chnt { font-size: 14px; }
+
+/* ===== PRINT ===== */
+@media print {
+  .topbar, .sidebar, .chnav { display: none; }
+  .main { margin-left: 0; }
+  .ch { display: block !important; padding: 20px; }
+}
+</style>
+</head>
+<body>
+
+<div id="progress-bar"><div id="progress-fill"></div></div>
+
+<header class="topbar">
+  <button class="tmenu" onclick="toggleSidebar()" aria-label="Toggle menu">☰</button>
+  <a class="tl" href="#">
+    <div class="tlm">BL</div>
+    <span class="tlt">BelajarLagi</span>
+  </a>
+  <div class="tsep"></div>
+  <div class="tc">Panduan Lengkap Tools AI</div>
+  <a class="credit" href="https://instagram.com/shafryyusuf" target="_blank">Made by @shafryyusuf</a>
+  <div class="tprogress" id="tprogress">Bab <span id="tpnum">1</span>/23</div>
+</header>
+
+<div class="overlay" id="overlay" onclick="closeSidebar()"></div>
+
+<div class="layout">
+
+<nav class="sidebar" id="sb">
+
+  <div class="sg"><div class="sg-icon" style="background:#FFF5F5">🤖</div>CLAUDE</div>
+  <a class="si active" onclick="go('c1')" data-ch="c1">
+    <div class="snum">1</div>
+    <div><div class="sit">Buat Akun Claude</div><div class="sis">Daftar, plan, verifikasi</div></div>
+  </a>
+  <a class="si" onclick="go('c2')" data-ch="c2">
+    <div class="snum">2</div>
+    <div><div class="sit">Tur Interface</div><div class="sis">Sidebar, chat, Artifacts</div></div>
+  </a>
+  <a class="si" onclick="go('c3')" data-ch="c3">
+    <div class="snum">3</div>
+    <div><div class="sit">Model & Token</div><div class="sis">Haiku · Sonnet · Opus</div></div>
+  </a>
+  <a class="si" onclick="go('c4')" data-ch="c4">
+    <div class="snum">4</div>
+    <div><div class="sit">Prompting Efektif</div><div class="sis">Teknik dasar & lanjutan</div></div>
+  </a>
+  <a class="si" onclick="go('c5')" data-ch="c5">
+    <div class="snum">5</div>
+    <div><div class="sit">Skills & Projects</div><div class="sis">SKILL.md, Project Knowledge</div></div>
+  </a>
+  <a class="si" onclick="go('c6')" data-ch="c6">
+    <div class="snum">6</div>
+    <div><div class="sit">Cowork & MCP</div><div class="sis">Desktop, Dispatch, Connector</div></div>
+  </a>
+
+  <div class="sg"><div class="sg-icon" style="background:#F0F9FF">🐙</div>GITHUB</div>
+  <a class="si" onclick="go('g1')" data-ch="g1">
+    <div class="snum">7</div>
+    <div><div class="sit">Buat Akun & Repo</div><div class="sis">Setup awal, README, .gitignore</div></div>
+  </a>
+  <a class="si" onclick="go('g2')" data-ch="g2">
+    <div class="snum">8</div>
+    <div><div class="sit">Git Workflow</div><div class="sis">Commit, push, branch, PR</div></div>
+  </a>
+  <a class="si" onclick="go('g3')" data-ch="g3">
+    <div class="snum">9</div>
+    <div><div class="sit">GitHub Desktop</div><div class="sis">GUI untuk non-developer</div></div>
+  </a>
+
+  <div class="sg"><div class="sg-icon" style="background:#F5F3FF">▲</div>VERCEL</div>
+  <a class="si" onclick="go('v1')" data-ch="v1">
+    <div class="snum">10</div>
+    <div><div class="sit">Deploy dari GitHub</div><div class="sis">Import, build, live URL</div></div>
+  </a>
+  <a class="si" onclick="go('v2')" data-ch="v2">
+    <div class="snum">11</div>
+    <div><div class="sit">Env & Domain</div><div class="sis">Variables, custom domain</div></div>
+  </a>
+
+  <div class="sg"><div class="sg-icon" style="background:#FFF7ED">🔁</div>REPLIT</div>
+  <a class="si" onclick="go('r1')" data-ch="r1">
+    <div class="snum">12</div>
+    <div><div class="sit">Buat Akun & Repl</div><div class="sis">Interface, editor, console</div></div>
+  </a>
+  <a class="si" onclick="go('r2')" data-ch="r2">
+    <div class="snum">13</div>
+    <div><div class="sit">Code & Deploy</div><div class="sis">Run, share, publish</div></div>
+  </a>
+
+  <div class="sdiv">Alternatif Claude Code</div>
+
+  <div class="sg"><div class="sg-icon" style="background:#F0FDF4">⚡</div>OPENCODE</div>
+  <a class="si" onclick="go('o3')" data-ch="o3">
+    <div class="snum">14</div>
+    <div><div class="sit">Desktop App</div><div class="sis">Download, install, Big Pickle gratis</div></div>
+  </a>
+  <a class="si" onclick="go('o1')" data-ch="o1">
+    <div class="snum">15</div>
+    <div><div class="sit">Install & Setup CLI</div><div class="sis">npm, Big Pickle gratis, config</div></div>
+  </a>
+  <a class="si" onclick="go('o2')" data-ch="o2">
+    <div class="snum">16</div>
+    <div><div class="sit">Cara Pakai CLI</div><div class="sis">Commands, workflow, tips</div></div>
+  </a>
+  <a class="si" onclick="go('o4')" data-ch="o4">
+    <div class="snum">17</div>
+    <div><div class="sit">Tutorial — Build</div><div class="sis">Link-in-bio page · Vercel</div></div>
+  </a>
+
+  <div class="sg"><div class="sg-icon" style="background:#FDF4FF">🎯</div>MIMOCODE</div>
+  <a class="si" onclick="go('m1')" data-ch="m1">
+    <div class="snum">18</div>
+    <div><div class="sit">Setup & Workflow</div><div class="sis">Akun, Mimo Auto gratis</div></div>
+  </a>
+  <a class="si" onclick="go('m2')" data-ch="m2">
+    <div class="snum">19</div>
+    <div><div class="sit">Tutorial — Build</div><div class="sis">Todo REST API · Replit</div></div>
+  </a>
+
+  <div class="sg"><div class="sg-icon" style="background:#FFF7ED">📱</div>ANDROID</div>
+  <a class="si" onclick="go('tx1')" data-ch="tx1">
+    <div class="snum">20</div>
+    <div><div class="sit">Claude Code via Termux</div><div class="sis">HP/tablet Android · gratis</div></div>
+  </a>
+
+  <div class="sg"><div class="sg-icon" style="background:#F1F5F9">⌨️</div>CLAUDE CODE CLI</div>
+  <a class="si" onclick="go('cc1')" data-ch="cc1">
+    <div class="snum">21</div>
+    <div><div class="sit">Install Claude Code</div><div class="sis">Bash · Node · Git · npm · setup</div></div>
+  </a>
+
+  <div class="sg"><div class="sg-icon" style="background:#FEF9C3">📋</div>FINAL PROJECT</div>
+  <a class="si" onclick="go('tp1')" data-ch="tp1">
+    <div class="snum">22</div>
+    <div><div class="sit">Pakai Template Build</div><div class="sis">Isi konteks, prompt AI, deploy</div></div>
+  </a>
+
+  <div class="sg"><div class="sg-icon" style="background:#E0F2FE">🛠</div>TOOLS DASAR</div>
+  <a class="si" onclick="go('id1')" data-ch="id1">
+    <div class="snum">23</div>
+    <div><div class="sit">Install VS Code & Python</div><div class="sis">Editor, Python, Git, Node.js</div></div>
+  </a>
+
+</nav>
+
+<main class="main" id="mainArea">
+
+<!-- ==================== C1: BUAT AKUN CLAUDE ==================== -->
+<section class="ch show" id="c1">
+  <div class="eyebrow"><div class="ed"></div>Claude · Bab 1</div>
+  <h1 class="chtitle">Buat Akun Claude</h1>
+  <p class="chsub">Dari nol sampai akun aktif — pilih plan yang tepat, verifikasi, dan siap dipakai.</p>
+  <div class="chmeta">
+    <div class="cmi">⏱ ~10 menit</div>
+    <div class="cmi">🔗 claude.ai</div>
+    <span class="badge br">Pemula</span>
+  </div>
+  <div class="prose">
+
+    <h2>1. Buka claude.ai</h2>
+    <p>Buka browser, ketik <code>claude.ai</code> di address bar. Kamu akan diarahkan ke halaman landing Claude milik Anthropic.</p>
+    <div class="screen">
+      <div class="screen-bar">
+        <div class="screen-dot" style="background:#EF4444"></div>
+        <div class="screen-dot" style="background:#F59E0B"></div>
+        <div class="screen-dot" style="background:#22C55E"></div>
+        <div class="screen-url">claude.ai</div>
+      </div>
+      <div class="screen-body">Halaman: "Meet Claude" → tombol "Start for free" atau "Try Claude"</div>
+    </div>
+
+    <h2>2. Pilih metode daftar</h2>
+    <p>Klik <strong>Sign up</strong>. Tersedia 3 opsi:</p>
+    <div class="tbl-wrap">
+      <table class="tbl">
+        <thead><tr><th>Metode</th><th>Kelebihan</th><th>Catatan</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Google</strong></td><td>Paling cepat, 1 klik</td><td>Pastikan pakai Google account yang aktif</td></tr>
+          <tr><td><strong>Apple</strong></td><td>Privacy-first</td><td>Hanya tersedia di Safari / iOS</td></tr>
+          <tr><td><strong>Email</strong></td><td>Bebas pakai email apapun</td><td>Perlu verifikasi OTP via email</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="box tip"><div class="bi">✅</div><div class="bb2"><div class="bt">Rekomendasi</div><div class="bx">Pakai Google agar login lebih cepat ke depannya. Kalau email kantor tidak bisa, pakai Gmail personal.</div></div></div>
+
+    <h2>3. Verifikasi email</h2>
+    <div class="steps">
+      <div class="step"><div class="stn">1</div><div class="stb"><div class="stt">Cek inbox email</div><div class="stx">Anthropic kirim email dari <code>no-reply@anthropic.com</code> dengan subject "Verify your email".</div></div></div>
+      <div class="step"><div class="stn">2</div><div class="stb"><div class="stt">Klik tombol verifikasi</div><div class="stx">Klik "Verify email address" di email. Tab browser otomatis terbuka dan akun langsung aktif.</div></div></div>
+      <div class="step"><div class="stn">3</div><div class="stb"><div class="stt">Tidak dapat email?</div><div class="stx">Cek folder Spam. Kalau 5 menit tidak ada, klik "Resend verification email" di halaman Claude.</div></div></div>
+    </div>
+
+    <h2>4. Pilih Plan</h2>
+    <p>Setelah verifikasi kamu diminta pilih plan. Bisa skip dan pakai Free dulu.</p>
+    <div class="tbl-wrap">
+      <table class="tbl">
+        <thead><tr><th>Plan</th><th>Harga</th><th>Cocok untuk</th><th>Limit</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Free</strong></td><td>Gratis</td><td>Coba-coba, tugas ringan</td><td>Paling kecil, sering kena limit</td></tr>
+          <tr><td><strong>Pro</strong></td><td>$20/bln</td><td>Professional harian</td><td>5× lebih besar dari Free</td></tr>
+          <tr><td><strong>Max 5×</strong></td><td>$100/bln</td><td>Heavy user</td><td>5× lebih dari Pro</td></tr>
+          <tr><td><strong>Max 20×</strong></td><td>$200/bln</td><td>Full-time AI worker</td><td>20× lebih dari Pro</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="box info"><div class="bi">💡</div><div class="bb2"><div class="bt">Mulai dari Free</div><div class="bx">Coba Free dulu. Kalau sering kena pesan "You've reached your limit", baru upgrade ke Pro. Sebagian besar non-tech professional cukup dengan Pro.</div></div></div>
+
+    <h2>5. Aktifkan pengaturan penting</h2>
+    <div class="steps">
+      <div class="step"><div class="stn">1</div><div class="stb"><div class="stt">Buka Settings</div><div class="stx">Klik nama/avatar di pojok kanan atas → <strong>Settings</strong>.</div></div></div>
+      <div class="step"><div class="stn">2</div><div class="stb"><div class="stt">Nonaktifkan "Help improve Claude"</div><div class="stx">Di tab <strong>Privacy</strong>, matikan toggle "Help improve our AI models". Ini mencegah percakapanmu dipakai untuk training model.</div></div></div>
+      <div class="step"><div class="stn">3</div><div class="stb"><div class="stt">Isi Profile preferences</div><div class="stx">Di tab <strong>Profile</strong>, isi nama dan tambahkan preferensi umum — misalnya bahasa, gaya komunikasi. Claude akan menggunakannya di semua percakapan.</div></div></div>
+    </div>
+
+    <h2>📺 Video Tutorial</h2>
+    <ul>
+      <li><a href="https://www.youtube.com/results?search_query=cara+daftar+Claude+AI+tutorial+Indonesia" target="_blank">🎬 "cara daftar Claude AI tutorial Indonesia"</a></li>
+      <li><a href="https://www.youtube.com/results?search_query=Claude+AI+tutorial+pemula+2024" target="_blank">🎬 "Claude AI tutorial pemula"</a></li>
+      <li><a href="https://www.youtube.com/results?search_query=Claude+vs+ChatGPT+mana+lebih+bagus" target="_blank">🎬 "Claude vs ChatGPT mana lebih bagus"</a></li>
+    </ul>
+
+  </div>
+  <div class="chnav">
+    <div></div>
+    <button class="chnbtn next" onclick="go('c2')">
+      <div><div class="chnl">Berikutnya</div><div class="chnt">Tur Interface Claude</div></div>
+      <div class="chnbtn-arrow">→</div>
+    </button>
+  </div>
+</section>
+
+<!-- ==================== C2: TUR INTERFACE ==================== -->
+<section class="ch" id="c2">
+  <div class="eyebrow"><div class="ed"></div>Claude · Bab 2</div>
+  <h1 class="chtitle">Tur Interface Claude</h1>
+  <p class="chsub">Kenali setiap bagian layar sebelum mulai — sidebar, chat area, Artifacts, dan fitur tersembunyi yang jarang diketahui.</p>
+  <div class="chmeta">
+    <div class="cmi">⏱ ~15 menit</div>
+    <span class="badge br">Pemula</span>
+  </div>
+  <div class="prose">
+
+    <h2>Peta Interface Claude.ai</h2>
+    <div class="grid2">
+      <div class="card"><div class="card-icon">◀</div><div class="card-title">Sidebar Kiri</div><div class="card-text">Riwayat percakapan, Projects, Starred chats. Bisa di-collapse untuk layar lebih lega.</div></div>
+      <div class="card"><div class="card-icon">💬</div><div class="card-title">Area Chat</div><div class="card-text">Tempat ketik prompt dan lihat respons. Mendukung drag & drop file langsung ke chat.</div></div>
+      <div class="card"><div class="card-icon">📄</div><div class="card-title">Artifacts Panel</div><div class="card-text">Muncul di kanan saat Claude menghasilkan kode, dokumen, atau visualisasi. Bisa di-preview langsung.</div></div>
+      <div class="card"><div class="card-icon">⚙️</div><div class="card-title">Model Selector</div><div class="card-text">Tombol di pojok kiri bawah input box. Klik untuk ganti antara Haiku, Sonnet, Opus.</div></div>
+    </div>
+
+    <h2>Input Box — Fitur Lengkap</h2>
+    <p>Kotak input bawah bukan sekadar tempat ketik teks. Ini semua yang bisa dilakukan:</p>
+    <div class="tbl-wrap">
+      <table class="tbl">
+        <thead><tr><th>Aksi</th><th>Cara</th></tr></thead>
+        <tbody>
+          <tr><td>Upload file</td><td>Klik ikon 📎 atau drag file langsung ke kotak</td></tr>
+          <tr><td>Upload gambar</td><td>Sama — Claude bisa "melihat" gambar dan screenshot</td></tr>
+          <tr><td>Ganti model</td><td>Klik nama model di sudut kiri input box</td></tr>
+          <tr><td>Kirim pesan</td><td>Enter atau klik tombol ➤</td></tr>
+          <tr><td>Newline di pesan</td><td>Shift + Enter</td></tr>
+          <tr><td>Stop respons</td><td>Klik tombol ⏹ yang muncul saat Claude sedang menjawab</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Artifacts — Output Interaktif</h2>
+    <p>Ketika Claude menghasilkan konten panjang atau kode, secara otomatis muncul panel Artifacts di sisi kanan. Ini bukan sekadar tampilan — kamu bisa:</p>
+    <ul>
+      <li><strong>Preview langsung</strong> — kode HTML/React bisa di-render secara live</li>
+      <li><strong>Copy sekali klik</strong> — tombol copy ada di pojok kanan atas Artifact</li>
+      <li><strong>Download</strong> — beberapa jenis Artifact bisa langsung diunduh</li>
+      <li><strong>Edit & iterate</strong> — minta Claude revisi, Artifact langsung update</li>
+    </ul>
+    <div class="box info"><div class="bi">💡</div><div class="bb2"><div class="bt">Kapan Artifact muncul?</div><div class="bx">Saat Claude membuat: kode (HTML/CSS/JS/Python), dokumen Markdown panjang, SVG, diagram, tabel data besar. Untuk respons teks biasa Artifact tidak muncul.</div></div></div>
+
+    <h2>Keyboard Shortcuts Penting</h2>
+    <div class="tbl-wrap">
+      <table class="tbl">
+        <thead><tr><th>Shortcut</th><th>Fungsi</th></tr></thead>
+        <tbody>
+          <tr><td><span class="tag">⌘/Ctrl + K</span></td><td>Buka command palette / pencarian chat</td></tr>
+          <tr><td><span class="tag">⌘/Ctrl + Shift + O</span></td><td>Chat baru</td></tr>
+          <tr><td><span class="tag">⌘/Ctrl + /</span></td><td>Toggle sidebar</td></tr>
+          <tr><td><span class="tag">Esc</span></td><td>Tutup Artifact panel</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Starred Chats & Riwayat</h2>
+    <p>Claude menyimpan semua riwayat chat di sidebar. Tips organisasi:</p>
+    <ul>
+      <li><strong>Rename chat</strong> — klik kanan atau ⋯ di samping nama chat → Rename. Beri nama deskriptif bukan "New Chat".</li>
+      <li><strong>Star chat</strong> — chat penting bisa di-pin di atas sidebar.</li>
+      <li><strong>Delete chat</strong> — hapus chat yang sudah tidak relevan untuk menjaga sidebar bersih.</li>
+    </ul>
+    <div class="box warn"><div class="bi">⚠️</div><div class="bb2"><div class="bt">Chat baru = memori baru</div><div class="bx">Setiap chat baru Claude mulai dari nol — tidak ingat percakapan sebelumnya. Untuk konteks yang persisten, gunakan Projects (dibahas di Bab 5).</div></div></div>
+
+    <h2>Memory — Preferensi yang Diingat</h2>
+    <p>Claude punya fitur Memory yang menyimpan fakta tentang kamu lintas semua percakapan. Untuk mengaktifkan:</p>
+    <div class="steps">
+      <div class="step"><div class="stn">1</div><div class="stb"><div class="stt">Settings → Features</div><div class="stx">Aktifkan toggle "Memory".</div></div></div>
+      <div class="step"><div class="stn">2</div><div class="stb"><div class="stt">Minta Claude mengingat</div><div class="stx">Ketik: "Ingat bahwa aku bekerja di bidang marketing, bahasa preferensiku Indonesia, dan aku tidak suka respons terlalu panjang."</div></div></div>
+      <div class="step"><div class="stn">3</div><div class="stb"><div class="stt">Kelola memori</div><div class="stx">Settings → Memory → lihat dan hapus memori yang tidak relevan.</div></div></div>
+    </div>
+
+    <h2>📺 Video Tutorial</h2>
+    <ul>
+      <li><a href="https://www.youtube.com/results?search_query=Claude+AI+interface+tour+tutorial" target="_blank">🎬 "Claude AI interface tour tutorial"</a></li>
+      <li><a href="https://www.youtube.com/results?search_query=cara+pakai+Claude+AI+untuk+kerja" target="_blank">🎬 "cara pakai Claude AI untuk kerja"</a></li>
+      <li><a href="https://www.youtube.com/results?search_query=Claude+Artifacts+tutorial+cara+pakai" target="_blank">🎬 "Claude Artifacts tutorial cara pakai"</a></li>
+    </ul>
+
+  </div>
+  <div class="chnav">
+    <button class="chnbtn" onclick="go('c1')"><div class="chnbtn-arrow">←</div><div><div class="chnl">Sebelumnya</div><div class="chnt">Buat Akun Claude</div></div></button>
+    <button class="chnbtn next" onclick="go('c3')"><div><div class="chnl">Berikutnya</div><div class="chnt">Model & Token</div></div><div class="chnbtn-arrow">→</div></button>
+  </div>
+</section>
+
+<!-- ==================== C3: MODEL & TOKEN ==================== -->
+<section class="ch" id="c3">
+  <div class="eyebrow"><div class="ed"></div>Claude · Bab 3</div>
+  <h1 class="chtitle">Model & Token</h1>
+  <p class="chsub">Pahami perbedaan Haiku, Sonnet, Opus — dan cara kerja token agar tidak boros kuota.</p>
+  <div class="chmeta">
+    <div class="cmi">⏱ ~15 menit</div>
+    <span class="badge br">Pemula</span>
+  </div>
+  <div class="prose">
+
+    <h2>Tiga Model Claude</h2>
+    <div class="tbl-wrap">
+      <table class="tbl">
+        <thead><tr><th>Model</th><th>Karakter</th><th>Cocok untuk</th><th>Kapan JANGAN pakai</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Haiku 4.5</strong></td><td>Cepat, ringan</td><td>Translate, rangkum singkat, Q&A sederhana, klasifikasi teks, draft email singkat</td><td>Analisis mendalam, coding, reasoning</td></tr>
+          <tr><td><strong>Sonnet 4.6</strong></td><td>Seimbang</td><td>Pekerjaan sehari-hari: drafting, analisis dokumen, brainstorming, riset</td><td>Task yang butuh reasoning sangat dalam</td></tr>
+          <tr><td><strong>Opus 4.8</strong></td><td>Paling kuat</td><td>Coding kompleks, analisis mendalam, reasoning multi-langkah, final review</td><td>Task ringan — boros token tidak perlu</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="box tip"><div class="bi">✅</div><div class="bb2"><div class="bt">Default yang aman</div><div class="bx">Mulai dengan Sonnet untuk hampir semua tugas. Naik ke Opus kalau hasil kurang memuaskan atau task sangat kompleks. Turun ke Haiku kalau hanya butuh output cepat dan singkat.</div></div></div>
+
+    <h2>Cara Ganti Model</h2>
+    <div class="steps">
+      <div class="step"><div class="stn">1</div><div class="stb"><div class="stt">Lihat nama model di input box</div><div class="stx">Di bawah kiri kotak input ada tombol yang menampilkan nama model aktif saat ini (misalnya "Claude Sonnet 4.6").</div></div></div>
+      <div class="step"><div class="stn">2</div><div class="stb"><div class="stt">Klik untuk ganti</div><div class="stx">Dropdown muncul — pilih model yang diinginkan. Perubahan berlaku untuk pesan berikutnya di chat yang sama.</div></div></div>
+      <div class="step"><div class="stn">3</div><div class="stb"><div class="stt">Ganti mid-conversation</div><div class="stx">Kamu bisa ganti model kapan saja dalam percakapan. Berguna kalau mulai dengan Sonnet lalu task makin kompleks.</div></div></div>
+    </div>
+
+    <h2>Token: Cara Kerja</h2>
+    <p>Token adalah unit terkecil yang diproses AI. Analoginya seperti "suku kata" untuk komputer.</p>
+    <div class="grid2">
+      <div class="card"><div class="card-icon">📥</div><div class="card-title">Input Token</div><div class="card-text">Semua yang masuk: teks prompt, file yang diupload, history chat, system prompt. Semua terhitung.</div></div>
+      <div class="card"><div class="card-icon">📤</div><div class="card-title">Output Token</div><div class="card-text">Semua yang Claude hasilkan. Respons panjang = output token besar.</div></div>
+      <div class="card"><div class="card-icon">🪟</div><div class="card-title">Context Window</div><div class="card-text">Batas total token yang bisa "dilihat" Claude sekaligus. ~200K token ≈ sekitar 150.000 kata.</div></div>
+      <div class="card"><div class="card-icon">📊</div><div class="card-title">Usage Limit</div><div class="card-text">Kuota per plan. Bukan per hari — sistem rolling window, reset otomatis berkala.</div></div>
+    </div>
+
+    <h2>Estimasi Token</h2>
+    <ul>
+      <li>1 token ≈ 4 karakter ≈ ¾ kata bahasa Inggris</li>
+      <li>1 halaman A4 teks ≈ 500–750 token</li>
+      <li>1 gambar resolusi sedang ≈ 200–500 token</li>
+      <li>1 file PDF 10 halaman ≈ 5.000–8.000 token</li>
+    </ul>
+
+    <h2>Cek Sisa Kuota</h2>
+    <p>Settings → <strong>Usage</strong> — lihat berapa pesan yang sudah terpakai. Notifikasi otomatis muncul di chat kalau sudah mendekati limit.</p>
+
+    <h2>5 Cara Hemat Token</h2>
+    <div class="steps">
+      <div class="step"><div class="stn">1</div><div class="stb"><div class="stt">Satu chat, satu tugas</div><div class="stx">History percakapan panjang ikut terbaca sebagai input. Chat baru untuk topik baru.</div></div></div>
+      <div class="step"><div class="stn">2</div><div class="stb"><div class="stt">Caveman prompting</div><div class="stx">Buang basa-basi. "Jelaskan token. Singkat. 3 poin." jauh lebih hemat dari paragraf penjelasan panjang.</div></div></div>
+      <div class="step"><div class="stn">3</div><div class="stb"><div class="stt">Minta jawaban ringkas</div><div class="stx">Tambahkan "Jawab singkat" atau "Maks 200 kata" di prompt kalau tidak butuh penjelasan panjang.</div></div></div>
+      <div class="step"><div class="stn">4</div><div class="stb"><div class="stt">Pakai .md bukan PDF</div><div class="stx">File teks polos (.md, .txt) jauh lebih hemat token dibanding PDF atau DOCX yang berisi data formatting.</div></div></div>
+      <div class="step"><div class="stn">5</div><div class="stb"><div class="stt">Upload hanya bagian yang relevan</div><div class="stx">Jangan upload dokumen 50 halaman kalau hanya butuh analisis 2 bab. Copy-paste bagian yang dibutuhkan saja.</div></div></div>
+    </div>
+
+    <div class="box warn"><div class="bi">⚠️</div><div class="bb2"><div class="bt">Context window penuh → Claude "lupa"</div><div class="bx">Ketika chat sangat panjang dan mendekati batas context window, Claude mulai "melupakan" bagian awal percakapan — bukan awal terbaru, tapi awal paling lama. Solusi: mulai chat baru dengan ringkasan konteks.</div></div></div>
+
+    <h2>📺 Video Tutorial</h2>
+    <ul>
+      <li><a href="https://www.youtube.com/results?search_query=perbedaan+model+AI+Claude+Sonnet+Opus+Haiku" target="_blank">🎬 "perbedaan model Claude Sonnet Opus Haiku"</a></li>
+      <li><a href="https://www.youtube.com/results?search_query=AI+token+context+window+explained+Indonesia" target="_blank">🎬 "AI token dan context window — apa itu?"</a></li>
+      <li><a href="https://www.youtube.com/results?search_query=Claude+Pro+vs+free+worth+it" target="_blank">🎬 "Claude Pro vs free — worth it?"</a></li>
+    </ul>
+
+  </div>
+  <div class="chnav">
+    <button class="chnbtn" onclick="go('c2')"><div class="chnbtn-arrow">←</div><div><div class="chnl">Sebelumnya</div><div class="chnt">Tur Interface</div></div></button>
+    <button class="chnbtn next" onclick="go('c4')"><div><div class="chnl">Berikutnya</div><div class="chnt">Prompting Efektif</div></div><div class="chnbtn-arrow">→</div></button>
+  </div>
+</section>
+
+<!-- ==================== C4: PROMPTING EFEKTIF ==================== -->
+<section class="ch" id="c4">
+  <div class="eyebrow"><div class="ed"></div>Claude · Bab 4</div>
+  <h1 class="chtitle">Prompting Efektif</h1>
+  <p class="chsub">Dari prompt generik ke instruksi yang menghasilkan output berkualitas — teknik dasar sampai lanjutan.</p>
+  <div class="chmeta"><div class="cmi">⏱ ~20 menit</div><span class="badge br">Menengah</span></div>
+  <div class="prose">
+
+    <h2>Anatomi Prompt yang Baik</h2>
+    <p>Prompt yang efektif punya 4 komponen. Tidak semua harus ada setiap saat, tapi semakin lengkap semakin baik hasilnya.</p>
+    <div class="tbl-wrap">
+      <table class="tbl">
+        <thead><tr><th>Komponen</th><th>Pertanyaan yang dijawab</th><th>Contoh</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Peran</strong></td><td>Claude harus jadi siapa?</td><td>"Kamu adalah copywriter B2B berpengalaman."</td></tr>
+          <tr><td><strong>Konteks</strong></td><td>Situasinya seperti apa?</td><td>"Aku sedang bikin proposal untuk klien di industri FMCG."</td></tr>
+          <tr><td><strong>Tugas</strong></td><td>Apa yang harus dilakukan?</td><td>"Buat executive summary 1 halaman dari dokumen ini."</td></tr>
+          <tr><td><strong>Format</strong></td><td>Output-nya harus seperti apa?</td><td>"Gunakan bullet points, bahasa Indonesia profesional, max 300 kata."</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Teknik: Caveman Prompting</h2>
+    <p>Buang semua basa-basi. Claude tidak butuh kata "tolong" atau "bisakah kamu". Langsung ke inti.</p>
+    <div class="grid2">
+      <div class="card" style="border-color:#FCA5A5"><div class="card-icon">❌</div><div class="card-title">Tidak efisien</div><div class="card-text">"Hei Claude, aku harap kamu baik-baik saja. Bisakah kamu tolong membantu aku untuk membuat sebuah email yang..."</div></div>
+      <div class="card" style="border-color:#86EFAC"><div class="card-icon">✅</div><div class="card-title">Efisien</div><div class="card-text">"Tulis email follow-up ke klien yang belum reply 3 hari. Nada: profesional tapi hangat. Bahasa Indonesia."</div></div>
+    </div>
+
+    <h2>Teknik: Berikan Contoh (Few-shot)</h2>
+    <p>Kalau mau output dengan format atau gaya tertentu, tunjukkan contohnya. Claude akan meniru pola itu.</p>
+    <pre><code>Kategorikan feedback pelanggan berikut. Format seperti contoh ini:
+
+Contoh:
+Input: "Aplikasinya lambat banget waktu upload foto"
+Output: [Bug/Performance] Upload foto
+
+Sekarang kategorikan:
+1. "Tombol checkout tidak bisa diklik di iPhone"
+2. "Warna tampilannya kurang enak dilihat"</code></pre>
+
+    <h2>Teknik: Chain of Thought</h2>
+    <p>Untuk masalah kompleks, minta Claude berpikir step by step sebelum menjawab.</p>
+    <pre><code>Sebelum menjawab, tuliskan dulu langkah-langkah logis yang kamu
+pakai untuk sampai ke kesimpulan.
+
+Pertanyaan: Apakah strategi harga penetration pricing cocok
+untuk produk SaaS B2B yang kami launch bulan depan?</code></pre>
+    <div class="box info"><div class="bi">💡</div><div class="bb2"><div class="bt">Mengapa ini efektif?</div><div class="bx">Ketika Claude "dipaksa" menuliskan reasoning-nya, kualitas jawaban meningkat signifikan. Claude tidak bisa skip langkah logis kalau harus menuliskannya secara eksplisit.</div></div></div>
+
+    <h2>Teknik: Iterasi via Edit</h2>
+    <p>Jangan expect output sempurna di percobaan pertama. Workflow yang lebih efisien:</p>
+    <div class="steps">
+      <div class="step"><div class="stn">1</div><div class="stb"><div class="stt">Draft pertama — brief & cepat</div><div class="stx">"Buat outline untuk artikel tentang manajemen waktu untuk manager." — tidak perlu detail dulu.</div></div></div>
+      <div class="step"><div class="stn">2</div><div class="stb"><div class="stt">Review & identifikasi yang kurang</div><div class="stx">Baca hasil, tandai bagian yang perlu diubah.</div></div></div>
+      <div class="step"><div class="stn">3</div><div class="stb"><div class="stt">Instruksi spesifik untuk revisi</div><div class="stx">"Bagian 3 terlalu umum. Ganti dengan contoh konkret dari konteks corporate Indonesia."</div></div></div>
+      <div class="step"><div class="stn">4</div><div class="stb"><div class="stt">Ulangi sampai sesuai</div><div class="stx">Biasanya 2–3 iterasi sudah menghasilkan output yang solid.</div></div></div>
+    </div>
+
+    <h2>Teknik: Role Stacking</h2>
+    <p>Untuk analisis komprehensif, minta Claude menjawab dari beberapa perspektif sekaligus.</p>
+    <pre><code>Analisis proposal bisnis ini dari 3 perspektif berbeda:
+1. CFO yang skeptis soal ROI
+2. Head of Marketing yang fokus ke brand impact
+3. Tech Lead yang khawatir soal implementasi
+
+Berikan masing-masing perspektif dalam 2-3 paragraf singkat.</code></pre>
+
+    <h2>Prompt Template yang Sering Berguna</h2>
+    <pre><code># Summarize dokumen
+"Baca dokumen ini dan buat ringkasan eksekutif maks 200 kata.
+Fokus pada: keputusan yang perlu diambil, risiko utama, next steps."
+
+# Analisis data
+"Data ini berisi [jelaskan]. Temukan 3 insight terpenting dan
+buat rekomendasi aksi yang spesifik untuk masing-masing."
+
+# Improve teks
+"Perbaiki teks ini. Pertahankan semua fakta dan poin utama.
+Tujuan: lebih jelas, lebih singkat, nada lebih profesional."
+
+# Brainstorm
+"Generate 10 ide untuk [tujuan]. Untuk setiap ide:
+- 1 kalimat deskripsi
+- Hambatan utama
+- Estimasi effort (rendah/sedang/tinggi)"</code></pre>
+
+    <h2>📺 Video Tutorial</h2>
+    <ul>
+      <li><a href="https://www.youtube.com/results?search_query=cara+prompt+AI+yang+baik+dan+benar" target="_blank">🎬 "cara prompt AI yang baik dan benar"</a></li>
+      <li><a href="https://www.youtube.com/results?search_query=prompt+engineering+tutorial+pemula+Indonesia" target="_blank">🎬 "prompt engineering tutorial pemula Indonesia"</a></li>
+      <li><a href="https://www.youtube.com/results?search_query=effective+prompting+tips+Claude+ChatGPT" target="_blank">🎬 "effective prompting tips Claude ChatGPT"</a></li>
+    </ul>
+
+  </div>
+  <div class="chnav">
+    <button class="chnbtn" onclick="go('c3')"><div class="chnbtn-arrow">←</div><div><div class="chnl">Sebelumnya</div><div class="chnt">Model & Token</div></div></button>
+    <button class="chnbtn next" onclick="go('c5')"><div><div class="chnl">Berikutnya</div><div class="chnt">Skills & Projects</div></div><div class="chnbtn-arrow">→</div></button>
+  </div>
+</section>
+
+<!-- ==================== C5: SKILLS & PROJECTS ==================== -->
+<section class="ch" id="c5">
+  <div class="eyebrow"><div class="ed"></div>Claude · Bab 5</div>
+  <h1 class="chtitle">Skills & Projects</h1>
+  <p class="chsub">Bangun sistem kerja yang persisten — Claude yang sudah "tahu" konteks bisnismu tanpa perlu dijelaskan ulang setiap saat.</p>
+  <div class="chmeta"><div class="cmi">⏱ ~25 menit</div><span class="badge br">Menengah</span></div>
+  <div class="prose">
+
+    <h2>Apa itu Project?</h2>
+    <p>Project adalah ruang kerja di Claude yang menyimpan tiga hal sekaligus: <strong>instruksi permanen</strong> (Custom Instructions), <strong>dokumen referensi</strong> (Project Knowledge), dan <strong>semua chat</strong> yang terkait tugas itu. Setiap chat baru dalam satu Project otomatis punya akses ke semuanya.</p>
+    <div class="box info"><div class="bi">💡</div><div class="bb2"><div class="bt">Project vs Chat biasa</div><div class="bx">Chat biasa: Claude mulai dari nol setiap saat. Project: Claude selalu ingat siapa kamu, apa konteks bisnisnya, dokumen apa yang relevan, dan format output seperti apa yang kamu mau — tanpa perlu dijelaskan ulang.</div></div></div>
+
+    <h2>Buat Project Pertama</h2>
+    <div class="steps">
+      <div class="step"><div class="stn">1</div><div class="stb"><div class="stt">Klik "Projects" di sidebar kiri</div><div class="stx">Lalu klik tombol "+ New Project".</div></div></div>
+      <div class="step"><div class="stn">2</div><div class="stb"><div class="stt">Beri nama deskriptif</div><div class="stx">Contoh: "Weekly Report Marketing", "Analisis Kompetitor", "Customer Support Scripts". Bukan "Project 1".</div></div></div>
+      <div class="step"><div class="stn">3</div><div class="stb"><div class="stt">Tulis Custom Instructions</div><div class="stx">Ini system prompt Project. Contoh template di bawah.</div></div></div>
+      <div class="step"><div class="stn">4</div><div class="stb"><div class="stt">Upload Project Knowledge</div><div class="stx">Klik "Add content" — bisa upload file atau paste teks. Ini jadi "referensi" Claude untuk semua chat dalam Project ini.</div></div></div>
+    </div>
+
+    <h3>Template Custom Instructions</h3>
+    <pre><code>## Peranmu
+Kamu adalah asisten senior untuk tim Marketing PT [nama perusahaan].
+
+## Konteks bisnis
+- Industri: [jelaskan]
+- Target audience: [jelaskan]
+- Produk utama: [jelaskan]
+- Kompetitor utama: [jelaskan]
+
+## Cara kerjamu
+- Selalu gunakan Bahasa Indonesia profesional
+- Jawaban harus actionable, bukan teori saja
+- Format output default: heading H2, bullet points, bold untuk poin penting
+- Kalau tidak yakin, tanya dulu jangan asumsi
+
+## Yang tidak boleh dilakukan
+- Jangan beri saran yang butuh budget besar tanpa diminta
+- Jangan gunakan jargon terlalu teknis</code></pre>
+
+    <h2>Apa itu Skill?</h2>
+    <p>Skill adalah instruksi spesifik yang mendefinisikan satu kemampuan Claude — cara dia berperilaku untuk jenis tugas tertentu. Skill dibuat sebagai file <code>SKILL.md</code> dan diunggah ke Project Knowledge.</p>
+    <p>Yang membuat Skill powerful: Claude <strong>auto-trigger</strong> skill berdasarkan konteks percakapan. Kamu tidak perlu mengetik nama skill-nya — cukup mulai dengan tugas yang sesuai.</p>
+
+    <h2>Struktur SKILL.md</h2>
+    <pre><code>---
+name: weekly-report-generator
+description: >
+  Aktif ketika diminta membuat weekly report, laporan mingguan,
+  atau recap aktivitas periode tertentu
+---
+
+## Tugasmu
+Generate weekly report dari data yang diberikan.
+
+## Format output wajib
+1. **Executive Summary** (3 kalimat, untuk atasan yang sibuk)
+2. **Highlight Minggu Ini** (3-5 bullet points, achievements)
+3. **Tantangan & Blocker** (apa yang menghambat, butuh bantuan apa)
+4. **Rencana Minggu Depan** (maks 5 item dengan PIC dan deadline)
+
+## Aturan
+- Gunakan angka/data konkret, bukan kata-kata umum
+- Kalau data tidak lengkap, tandai dengan [DATA DIBUTUHKAN]
+- Nada: profesional tapi tidak kaku</code></pre>
+
+    <h2>Contoh Use Case Skills per Profesi</h2>
+    <div class="tbl-wrap">
+      <table class="tbl">
+        <thead><tr><th>Profesi</th><th>Skill yang berguna</th></tr></thead>
+        <tbody>
+          <tr><td>Marketing</td><td>brief-writer, social-caption, campaign-analyzer, competitor-watcher</td></tr>
+          <tr><td>Finance</td><td>report-summarizer, variance-analyzer, budget-formatter</td></tr>
+          <tr><td>HR</td><td>jd-writer, interview-questions, onboarding-checklist</td></tr>
+          <tr><td>Sales</td><td>proposal-builder, follow-up-email, objection-handler</td></tr>
+          <tr><td>Product</td><td>prd-writer, user-story-generator, feedback-synthesizer</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="box warn"><div class="bi">⚠️</div><div class="bb2"><div class="bt">Data sensitif di Project Knowledge</div><div class="bx">File yang diupload tersimpan di server Anthropic. Untuk laporan keuangan, data pelanggan, atau pricing internal: nonaktifkan "Help improve AI" di Settings, atau pakai versi yang sudah dianonimkan.</div></div></div>
+
+    <h2>📺 Video Tutorial</h2>
+    <ul>
+      <li><a href="https://www.youtube.com/results?search_query=Claude+Projects+tutorial+cara+pakai" target="_blank">🎬 "Claude Projects tutorial cara pakai"</a></li>
+      <li><a href="https://www.youtube.com/results?search_query=AI+assistant+untuk+produktivitas+kerja+Indonesia" target="_blank">🎬 "AI assistant untuk produktivitas kerja"</a></li>
+      <li><a href="https://www.youtube.com/results?search_query=cara+pakai+Claude+untuk+pekerjaan+sehari+hari" target="_blank">🎬 "cara pakai Claude untuk pekerjaan sehari-hari"</a></li>
+    </ul>
+
+  </div>
+  <div class="chnav">
+    <button class="chnbtn" onclick="go('c4')"><div class="chnbtn-arrow">←</div><div><div class="chnl">Sebelumnya</div><div class="chnt">Prompting Efektif</div></div></button>
+    <button class="chnbtn next" onclick="go('c6')"><div><div class="chnl">Berikutnya</div><div class="chnt">Cowork & MCP</div></div><div class="chnbtn-arrow">→</div></button>
+  </div>
+</section>
+
+<!-- ==================== C6: COWORK & MCP ==================== -->
+<section class="ch" id="c6">
+  <div class="eyebrow"><div class="ed"></div>Claude · Bab 6</div>
+  <h1 class="chtitle">Cowork & MCP</h1>
+  <p class="chsub">Claude Desktop, Cowork, Dispatch, dan cara menyambungkan Claude ke aplikasi yang sudah kamu pakai sehari-hari.</p>
+  <div class="chmeta"><div class="cmi">⏱ ~20 menit</div><span class="badge br">Menengah</span></div>
+  <div class="prose">
+
+    <h2>Install Claude Desktop</h2>
+    <div class="steps">
+      <div class="step"><div class="stn">1</div><div class="stb"><div class="stt">Download installer</div><div class="stx">Buka <code>claude.ai/download</code> → pilih versi Mac atau Windows → download installer.</div></div></div>
+      <div class="step"><div class="stn">2</div><div class="stb"><div class="stt">Install & login</div><div class="stx">Mac: drag ke Applications. Windows: jalankan .exe installer. Login dengan akun Claude yang sama.</div></div></div>
+      <div class="step"><div class="stn">3</div><div class="stb"><div class="stt">Cek versi terbaru</div><div class="stx">Claude Desktop → menu Help → Check for updates. Selalu pakai versi terbaru untuk akses fitur Cowork dan Dispatch.</div></div></div>
+    </div>
+
+    <h2>Fitur Cowork</h2>
+    <p>Cowork adalah mode Claude Desktop di mana Claude bisa melihat layarmu, baca file lokal, dan menjalankan aksi di komputer — dengan izinmu. Muncul sebagai tab tersendiri di sidebar kiri aplikasi.</p>
+    <div class="grid2">
+      <div class="card"><div class="card-icon">👁</div><div class="card-title">Screen Aware</div><div class="card-text">Claude bisa melihat apa yang ada di layarmu (screenshot) untuk memberikan instruksi yang kontekstual.</div></div>
+      <div class="card"><div class="card-icon">📁</div><div class="card-title">File Access</div><div class="card-text">Baca dan tulis file di folder yang kamu izinkan. Tidak perlu upload manual.</div></div>
+      <div class="card"><div class="card-icon">⚡</div><div class="card-title">Act Mode</div><div class="card-text">Claude bisa menjalankan aksi di browser atau aplikasi (klik, isi form) — untuk otomasi ringan.</div></div>
+      <div class="card"><div class="card-icon">📱</div><div class="card-title">Dispatch</div><div class="card-text">Akses Claude Desktop dari HP saat laptop menyala. Layar HP → kontrol Claude di laptop.</div></div>
+    </div>
+
+    <h2>Setup Dispatch (Akses dari HP)</h2>
+    <div class="steps">
+      <div class="step"><div class="stn">1</div><div class="stb"><div class="stt">Pastikan laptop menyala & terhubung internet</div><div class="stx">Dispatch tidak bisa diakses kalau laptop sleep atau mati.</div></div></div>
+      <div class="step"><div class="stn">2</div><div class="stb"><div class="stt">Buka Claude Desktop → tab Dispatch</div><div class="stx">Ada QR code atau URL unik yang ditampilkan.</div></div></div>
+      <div class="step"><div class="stn">3</div><div class="stb"><div class="stt">Scan QR dari HP</div><div class="stx">Atau buka URL-nya di browser HP. Langsung terhubung ke sesi Claude Desktop di laptop.</div></div></div>
+    </div>
+
+    <h2>MCP — Model Context Protocol</h2>
+    <p>MCP adalah protokol yang memungkinkan Claude terhubung langsung ke aplikasi dan layanan eksternal — tanpa harus upload file atau copy-paste data. Claude bisa read dan write ke sistem yang terhubung secara real-time.</p>
+
+    <h3>Connector yang Tersedia</h3>
+    <div class="tbl-wrap">
+      <table class="tbl">
+        <thead><tr><th>Connector</th><th>Yang bisa dilakukan Claude</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Google Drive</strong></td><td>Baca file, tulis dokumen baru, update spreadsheet</td></tr>
+          <tr><td><strong>Gmail</strong></td><td>Baca email, draft balasan, cari thread spesifik</td></tr>
+          <tr><td><strong>Google Calendar</strong></td><td>Lihat jadwal, buat event, recap agenda hari ini</td></tr>
+          <tr><td><strong>Microsoft 365</strong></td><td>Baca/tulis Word, Excel, Outlook, Teams</td></tr>
+          <tr><td><strong>GitHub</strong></td><td>Baca repo, buat issue, review PR</td></tr>
+          <tr><td><strong>Slack</strong></td><td>Baca channel, kirim pesan, cari percakapan</td></tr>
+          <tr><td><strong>Notion</strong></td><td>Baca/tulis halaman, update database</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Cara Tambah Connector</h3>
+    <div class="steps">
+      <div class="step"><div class="stn">1</div><div class="stb"><div class="stt">Settings → Integrations (atau Connectors)</div><div class="stx">Di Claude.ai atau Claude Desktop.</div></div></div>
+      <div class="step"><div class="stn">2</div><div class="stb"><div class="stt">Pilih connector</div><div class="stx">Cari layanan yang ingin disambungkan, klik "Connect".</div></div></div>
+      <div class="step"><div class="stn">3</div><div class="stb"><div class="stt">Authorize via OAuth</div><div class="stx">Login ke akun layanan tersebut dan berikan izin. Pilih scope sesempit mungkin — jangan beri akses lebih dari yang dibutuhkan.</div></div></div>
+      <div class="step"><div class="stn">4</div><div class="stb"><div class="stt">Test di chat</div><div class="stx">"Tampilkan 5 email terbaru dari hari ini" — kalau Gmail terhubung, Claude langsung bisa mengambilnya.</div></div></div>
+    </div>
+
+    <div class="box warn"><div class="bi">⚠️</div><div class="bb2"><div class="bt">Connector aktif makan lebih banyak token</div><div class="bx">Setiap Connector yang aktif menambah context yang diproses Claude. Nonaktifkan connector yang tidak sedang dipakai untuk menghemat token dan mempercepat respons.</div></div></div>
+
+    <h2>📺 Video Tutorial</h2>
+    <ul>
+      <li><a href="https://www.youtube.com/results?search_query=Claude+MCP+connector+tutorial+2024" target="_blank">🎬 "Claude MCP connector tutorial"</a></li>
+      <li><a href="https://www.youtube.com/results?search_query=Claude+connect+Gmail+Google+Drive+tutorial" target="_blank">🎬 "Claude connect Gmail Google Drive tutorial"</a></li>
+      <li><a href="https://www.youtube.com/results?search_query=Claude+team+workspace+collaboration" target="_blank">🎬 "Claude team workspace collaboration"</a></li>
+    </ul>
+
+  </div>
+  <div class="chnav">
+    <button class="chnbtn" onclick="go('c5')"><div class="chnbtn-arrow">←</div><div><div class="chnl">Sebelumnya</div><div class="chnt">Skills & Projects</div></div></button>
+    <button class="chnbtn next" onclick="go('g1')"><div><div class="chnl">Berikutnya</div><div class="chnt">GitHub — Buat Akun & Repo</div></div><div class="chnbtn-arrow">→</div></button>
+  </div>
+</section>
+
+<!-- ==================== G1: GITHUB AKUN & REPO ==================== -->
+<section class="ch" id="g1">
+  <div class="eyebrow"><div class="ed"></div>GitHub · Bab 7</div>
+  <h1 class="chtitle">Buat Akun & Repo Pertama</h1>
+  <p class="chsub">GitHub adalah tempat menyimpan, memversi, dan berbagi kode. Ini fondasi sebelum bisa deploy ke Vercel atau kolaborasi dengan AI coding tools.</p>
+  <div class="chmeta"><div class="cmi">⏱ ~20 menit</div><div class="cmi">🔗 github.com</div><span class="badge bb">Developer</span></div>
+  <div class="prose">
+
+    <h2>Kenapa Perlu GitHub?</h2>
+    <div class="grid2">
+      <div class="card"><div class="card-icon">💾</div><div class="card-title">Version Control</div><div class="card-text">Setiap perubahan tercatat. Bisa undo ke versi manapun kapanpun — seperti Ctrl+Z tanpa batas.</div></div>
+      <div class="card"><div class="card-icon">🚀</div><div class="card-title">Deploy ke Vercel</div><div class="card-text">Vercel, Netlify, Render semuanya butuh repo GitHub sebagai sumber kode untuk deploy.</div></div>
+      <div class="card"><div class="card-icon">🤝</div><div class="card-title">Kolaborasi</div><div class="card-text">Bekerja paralel dengan tim tanpa overwrite pekerjaan satu sama lain.</div></div>
+      <div class="card"><div class="card-icon">🤖</div><div class="card-title">AI Integration</div><div class="card-text">OpenCode, GitHub Copilot, dan Claude Code semua terintegrasi langsung ke GitHub.</div></div>
+    </div>
+
+    <h2>Buat Akun GitHub</h2>
+    <div class="steps">
+      <div class="step"><div class="stn">1</div><div class="stb"><div class="stt">Buka github.com → Sign up</div><div class="stx">Klik tombol "Sign up" di pojok kanan atas.</div></div></div>
+      <div class="step"><div class="stn">2</div><div class="stb"><div class="stt">Isi email & password</div><div class="stx">Pakai email yang aktif. Password minimal 8 karakter dengan kombinasi huruf + angka.</div></div></div>
+      <div class="step"><div class="stn">3</div><div class="stb"><div class="stt">Pilih username</div><div class="stx">Username akan jadi bagian dari URL repositorimu: <code>github.com/username/repo-name</code>. Pilih yang profesional dan mudah diingat.</div></div></div>
+      <div class="step"><div class="stn">4</div><div class="stb"><div class="stt">Verifikasi email</div><div class="stx">GitHub kirim kode 6 digit ke email. Masukkan kode untuk aktivasi.</div></div></div>
+      <div class="step"><div class="stn">5</div><div class="stb"><div class="stt">Pilih plan — Free sudah cukup</div><div class="stx">Plan Free sudah mencakup unlimited public & private repos, GitHub Actions, dan semua yang kita butuhkan.</div></div></div>
+    </div>
+
+    <h2>Buat Repository Pertama</h2>
+    <p>Repository (repo) adalah folder project di GitHub. Setiap project punya repo sendiri.</p>
+    <div class="steps">
+      <div class="step"><div class="stn">1</div><div class="stb"><div class="stt">Klik "+" → New repository</div><div class="stx">Tombol "+" ada di pojok kanan atas setelah login.</div></div></div>
+      <div class="step"><div class="stn">2</div><div class="stb"><div class="stt">Isi detail repo</div><div class="stx"><strong>Repository name</strong>: nama project, gunakan huruf kecil dan tanda hubung (contoh: <code>my-portfolio-site</code>)<br><br><strong>Description</strong>: opsional tapi berguna<br><br><strong>Visibility</strong>: Public (bisa dilihat siapapun) atau Private (hanya kamu)</div></div></div>
+      <div class="step"><div class="stn">3</div><div class="stb"><div class="stt">Centang "Add a README file"</div><div class="stx">README.md adalah halaman depan repo. Penting untuk menjelaskan apa isi project ini.</div></div></div>
+      <div class="step"><div class="stn">4</div><div class="stb"><div class="stt">Pilih .gitignore template</div><div class="stx">Kalau project Node.js, pilih template "Node". Ini mencegah file seperti <code>node_modules</code> ikut terupload.</div></div></div>
+      <div class="step"><div class="stn">5</div><div class="stb"><div class="stt">Klik "Create repository"</div><div class="stx">Repo langsung aktif dengan URL: <code>github.com/[username]/[repo-name]</code></div></div></div>
+    </div>
+
+    <h2>Anatomi Halaman Repo</h2>
+    <div class="tbl-wrap">
+      <table class="tbl">
+        <thead><tr><th>Bagian</th><th>Fungsi</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Code tab</strong></td><td>Lihat semua file, browse isi folder, baca konten file</td></tr>
+          <tr><td><strong>Issues tab</strong></td><td>Catat bug, feature request, atau task yang perlu dikerjakan</td></tr>
+          <tr><td><strong>Pull Requests</strong></td><td>Tempat review perubahan kode sebelum di-merge ke main branch</td></tr>
+          <tr><td><strong>Actions tab</strong></td><td>CI/CD — otomatis test & deploy setiap ada perubahan</td></tr>
+          <tr><td><strong>Settings tab</strong></td><td>Manage akses, deploy keys, webhooks, delete repo</td></tr>
+          <tr><td><strong>README.md</strong></td><td>Otomatis ditampilkan di bawah daftar file — halaman depan repo</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Edit File Langsung di GitHub</h2>
+    <p>Untuk perubahan kecil, tidak perlu download ke komputer dulu:</p>
+    <div class="steps">
+      <div class="step"><div class="stn">1</div><div class="stb"><div class="stt">Klik file yang ingin diedit</div><div class="stx">Misalnya README.md.</div></div></div>
+      <div class="step"><div class="stn">2</div><div class="stb"><div class="stt">Klik ikon pensil ✏️</div><div class="stx">Di kanan atas tampilan file.</div></div></div>
+      <div class="step"><div class="stn">3</div><div class="stb"><div class="stt">Edit teks langsung di browser</div><div class="stx">GitHub punya editor teks bawaan.</div></div></div>
+      <div class="step"><div class="stn">4</div><div class="stb"><div class="stt">Commit changes</div><div class="stx">Scroll ke bawah → isi commit message (apa yang berubah) → klik "Commit changes".</div></div></div>
+    </div>
+
+    <div class="box tip"><div class="bi">✅</div><div class="bb2"><div class="bt">GitHub.dev — VS Code di browser</div><div class="bx">Di halaman repo, tekan tombol <strong>.</strong> (titik) di keyboard. Repo langsung terbuka di VS Code versi browser — lebih nyaman untuk edit banyak file sekaligus tanpa install apapun.</div></div></div>
+
+    <h2>📺 Video Tutorial</h2>
+    <ul>
+      <li><a href="https://www.youtube.com/results?search_query=cara+daftar+GitHub+membuat+repository+pemula" target="_blank">🎬 "cara daftar GitHub membuat repository pemula"</a></li>
+      <li><a href="https://www.youtube.com/results?search_query=GitHub+tutorial+lengkap+Indonesia+pemula" target="_blank">🎬 "GitHub tutorial lengkap Indonesia pemula"</a></li>
+      <li><a href="https://www.youtube.com/results?search_query=GitHub+untuk+non+programmer+bukan+developer" target="_blank">🎬 "GitHub untuk non-programmer"</a></li>
+    </ul>
+
+  </div>
+  <div class="chnav">
+    <button class="chnbtn" onclick="go('c6')"><div class="chnbtn-arrow">←</div><div><div class="chnl">Sebelumnya</div><div class="chnt">Cowork & MCP</div></div></button>
+    <button class="chnbtn next" onclick="go('g2')"><div><div class="chnl">Berikutnya</div><div class="chnt">Git Workflow</div></div><div class="chnbtn-arrow">→</div></button>
+  </div>
+</section>
+
+<!-- ==================== G2: GIT WORKFLOW ==================== -->
+<section class="ch" id="g2">
+  <div class="eyebrow"><div class="ed"></div>GitHub · Bab 8</div>
+  <h1 class="chtitle">Git Workflow</h1>
+  <p class="chsub">Commit, push, branch, pull request — siklus kerja dasar yang wajib dikuasai sebelum bisa kolaborasi atau deploy otomatis.</p>
+  <div class="chmeta"><div class="cmi">⏱ ~25 menit</div><span class="badge bb">Developer</span></div>
+  <div class="prose">
+
+    <h2>Konsep Dasar Git</h2>
+    <div class="grid2">
+      <div class="card"><div class="card-icon">📸</div><div class="card-title">Commit</div><div class="card-text">Snapshot perubahan yang disimpan. Setiap commit punya pesan yang menjelaskan apa yang berubah.</div></div>
+      <div class="card"><div class="card-icon">⬆️</div><div class="card-title">Push</div><div class="card-text">Kirim commit dari komputer lokal ke GitHub (remote). Buat perubahan bisa dilihat di web dan di-deploy.</div></div>
+      <div class="card"><div class="card-icon">⬇️</div><div class="card-title">Pull</div><div class="card-text">Ambil perubahan terbaru dari GitHub ke komputer. Penting kalau ada perubahan dari orang lain atau dari deploy tools.</div></div>
+      <div class="card"><div class="card-icon">🌿</div><div class="card-title">Branch</div><div class="card-text">Salinan paralel dari kode. Buat fitur baru di branch terpisah agar main branch tetap stabil.</div></div>
+    </div>
+
+    <h2>Setup Git di Komputer (Sekali Saja)</h2>
+    <pre><code># Install Git — cek dulu apakah sudah ada
+git --version
+
+# Kalau belum: download dari git-scm.com
+
+# Konfigurasi identitas (nama & email harus sama dengan akun GitHub)
+git config --global user.name "Nama Kamu"
+git config --global user.email "email@kamu.com"
+
+# Verifikasi
+git config --list</code></pre>
+
+    <h2>Workflow Harian: Clone → Edit → Commit → Push</h2>
+    <div class="steps">
+      <div class="step"><div class="stn">1</div><div class="stb"><div class="stt">Clone repo ke komputer lokal</div><div class="stx">Di halaman repo GitHub, klik tombol hijau "Code" → copy URL HTTPS.<pre><code>git clone https://github.com/username/repo-name.git</code></pre>Ini membuat folder di komputer dengan semua file repo.</div></div></div>
+      <div class="step"><div class="stn">2</div><div class="stb"><div class="stt">Masuk ke folder repo</div><div class="stx"><code>cd repo-name</code></div></div></div>
+      <div class="step"><div class="stn">3</div><div class="stb"><div class="stt">Edit file sesuai kebutuhan</div><div class="stx">Pakai editor apapun (VS Code, Notepad, dll). Kalau pakai AI tools seperti OpenCode, ini tempat mereka bekerja.</div></div></div>
+      <div class="step"><div class="stn">4</div><div class="stb"><div class="stt">Lihat perubahan</div><div class="stx"><code>git status</code> — lihat file mana yang berubah<br><code>git diff</code> — lihat detail apa yang berubah baris per baris</div></div></div>
+      <div class="step"><div class="stn">5</div><div class="stb"><div class="stt">Stage perubahan</div><div class="stx"><code>git add nama-file.txt</code> — stage file tertentu<br><code>git add .</code> — stage semua perubahan</div></div></div>
+      <div class="step"><div class="stn">6</div><div class="stb"><div class="stt">Commit dengan pesan jelas</div><div class="stx"><pre><code>git commit -m "feat: tambah halaman kontak"</code></pre>Format pesan commit yang baik: <code>tipe: deskripsi singkat</code><br>Tipe umum: <code>feat</code> (fitur baru), <code>fix</code> (bug fix), <code>update</code> (perubahan), <code>docs</code> (dokumentasi)</div></div></div>
+      <div class="step"><div class="stn">7</div><div class="stb"><div class="stt">Push ke GitHub</div><div class="stx"><pre><code>git push origin main</code></pre>Perubahan langsung terlihat di github.com dan Vercel otomatis deploy ulang kalau sudah di-connect.</div></div></div>
+    </div>
+
+    <h2>Bekerja dengan Branch</h2>
+    <pre><code># Buat branch baru untuk fitur
+git checkout -b nama-fitur
+
+# Kerjakan perubahan, lalu commit seperti biasa
+
+# Push branch ke GitHub
+git push origin nama-fitur
+
+# Setelah selesai, merge ke main via Pull Request di GitHub</code></pre>
+    <div class="box info"><div class="bi">💡</div><div class="bb2"><div class="bt">Kapan perlu branch?</div><div class="bx">Untuk project solo: tidak wajib, langsung di main saja. Untuk project tim atau production: selalu buat branch untuk setiap fitur/perubahan besar, review via PR, baru merge ke main.</div></div></div>
+
+    <h2>Perintah Git Darurat</h2>
+    <pre><code># Batalkan perubahan yang belum di-commit (hati-hati: tidak bisa undo!)
+git checkout -- nama-file.txt
+
+# Lihat riwayat commit
+git log --oneline
+
+# Ambil perubahan terbaru dari GitHub
+git pull origin main
+
+# Kalau terjadi conflict saat pull
+# Edit file yang conflict (tandai &lt;&lt;&lt;&lt; HEAD ====),
+# lalu commit ulang setelah resolve</code></pre>
+
+    <h2>📺 Video Tutorial</h2>
+    <ul>
+      <li><a href="https://www.youtube.com/results?search_query=git+commit+push+tutorial+pemula+Indonesia" target="_blank">🎬 "git commit push tutorial pemula Indonesia"</a></li>
+      <li><a href="https://www.youtube.com/results?search_query=git+workflow+dasar+untuk+pemula" target="_blank">🎬 "git workflow dasar untuk pemula"</a></li>
+      <li><a href="https://www.youtube.com/results?search_query=cara+pakai+git+terminal+pertama+kali" target="_blank">🎬 "cara pakai git di terminal pertama kali"</a></li>
+    </ul>
+
+  </div>
+  <div class="chnav">
+    <button class="chnbtn" onclick="go('g1')"><div class="chnbtn-arrow">←</div><div><div class="chnl">Sebelumnya</div><div class="chnt">Buat Akun & Repo</div></div></button>
+    <button class="chnbtn next" onclick="go('g3')"><div><div class="chnl">Berikutnya</div><div class="chnt">GitHub Desktop</div></div><div class="chnbtn-arrow">→</div></button>
+  </div>
+</section>
+
+<!-- ==================== G3: GITHUB DESKTOP ==================== -->
+<section class="ch" id="g3">
+  <div class="eyebrow"><div class="ed"></div>GitHub · Bab 9</div>
+  <h1 class="chtitle">GitHub Desktop</h1>
+  <p class="chsub">Alternatif GUI untuk yang tidak nyaman dengan terminal — semua fungsi Git tersedia dengan klik, tanpa perlu hafal command.</p>
+  <div class="chmeta"><div class="cmi">⏱ ~15 menit</div><div class="cmi">🔗 desktop.github.com</div><span class="badge bg">Non-Dev Friendly</span></div>
+  <div class="prose">
+
+    <h2>Install GitHub Desktop</h2>
+    <div class="steps">
+      <div class="step"><div class="stn">1</div><div class="stb"><div class="stt">Download dari desktop.github.com</div><div class="stx">Pilih versi Mac atau Windows. File installer sekitar 100MB.</div></div></div>
+      <div class="step"><div class="stn">2</div><div class="stb"><div class="stt">Install & login</div><div class="stx">Mac: drag ke Applications. Windows: jalankan installer. Login dengan akun GitHub yang sudah dibuat.</div></div></div>
+      <div class="step"><div class="stn">3</div><div class="stb"><div class="stt">Configure Git identity</div><div class="stx">Desktop akan otomatis mengambil nama & email dari akun GitHub. Klik "Finish".</div></div></div>
+    </div>
+
+    <h2>Clone Repo via Desktop</h2>
+    <div class="steps">
+      <div class="step"><div class="stn">1</div><div class="stb"><div class="stt">File → Clone Repository</div><div class="stx">Atau Ctrl/Cmd+Shift+O.</div></div></div>
+      <div class="step"><div class="stn">2</div><div class="stb"><div class="stt">Pilih dari daftar repo</div><div class="stx">Tab "GitHub.com" akan menampilkan semua repo di akunmu. Klik yang ingin di-clone.</div></div></div>
+      <div class="step"><div class="stn">3</div><div class="stb"><div class="stt">Pilih lokasi folder</div><div class="stx">Tentukan di mana folder repo akan disimpan di komputer. Klik "Clone".</div></div></div>
+    </div>
+
+    <h2>Commit & Push via Desktop</h2>
+    <div class="steps">
+      <div class="step"><div class="stn">1</div><div class="stb"><div class="stt">Edit file di editor</div><div class="stx">Buka folder repo di VS Code atau editor apapun. Edit file seperti biasa.</div></div></div>
+      <div class="step"><div class="stn">2</div><div class="stb"><div class="stt">Lihat perubahan di Desktop</div><div class="stx">Otomatis terdeteksi di panel kiri. File yang berubah ditandai, dan panel kanan menampilkan diff baris per baris.</div></div></div>
+      <div class="step"><div class="stn">3</div><div class="stb"><div class="stt">Tulis commit message</div><div class="stx">Di kotak "Summary" (wajib) dan "Description" (opsional) di pojok kiri bawah.</div></div></div>
+      <div class="step"><div class="stn">4</div><div class="stb"><div class="stt">Klik "Commit to main"</div><div class="stx">Commit tersimpan secara lokal.</div></div></div>
+      <div class="step"><div class="stn">5</div><div class="stb"><div class="stt">Klik "Push origin"</div><div class="stx">Tombol di atas → perubahan dikirim ke GitHub. Vercel otomatis deploy ulang kalau sudah di-connect.</div></div></div>
+    </div>
+
+    <div class="box tip"><div class="bi">✅</div><div class="bb2"><div class="bt">Open in VS Code</div><div class="bx">Di GitHub Desktop, klik "Open in Visual Studio Code" (atau editor lain) untuk langsung buka seluruh project. Lebih nyaman dari buka file satu per satu.</div></div></div>
+
+    <h2>📺 Video Tutorial</h2>
+    <ul>
+      <li><a href="https://www.youtube.com/results?search_query=GitHub+Desktop+tutorial+Indonesia+cara+pakai" target="_blank">🎬 "GitHub Desktop tutorial Indonesia cara pakai"</a></li>
+      <li><a href="https://www.youtube.com/results?search_query=GitHub+Desktop+vs+terminal+git+mana+lebih+mudah" target="_blank">🎬 "GitHub Desktop vs terminal git"</a></li>
+      <li><a href="https://www.youtube.com/results?search_query=cara+push+code+ke+GitHub+tanpa+terminal" target="_blank">🎬 "cara push code ke GitHub tanpa terminal"</a></li>
+    </ul>
+
+  </div>
+  <div class="chnav">
+    <button class="chnbtn" onclick="go('g2')"><div class="chnbtn-arrow">←</div><div><div class="chnl">Sebelumnya</div><div class="chnt">Git Workflow</div></div></button>
+    <button class="chnbtn next" onclick="go('v1')"><div><div class="chnl">Berikutnya</div><div class="chnt">Vercel — Deploy dari GitHub</div></div><div class="chnbtn-arrow">→</div></button>
+  </div>
+</section>
+
+<!-- ==================== V1: VERCEL DEPLOY ==================== -->
+<section class="ch" id="v1">
+  <div class="eyebrow"><div class="ed"></div>Vercel · Bab 10</div>
+  <h1 class="chtitle">Deploy dari GitHub ke Vercel</h1>
+  <p class="chsub">Dari repo GitHub ke URL live yang bisa diakses siapapun di internet — dalam hitungan menit, tanpa konfigurasi server.</p>
+  <div class="chmeta"><div class="cmi">⏱ ~15 menit</div><div class="cmi">🔗 vercel.com</div><span class="badge bg">Gratis</span></div>
+  <div class="prose">
+
+    <h2>Kenapa Vercel?</h2>
+    <p>Vercel adalah platform hosting yang paling populer untuk web app modern. Deploy semudah connect repo GitHub — Vercel handle sisanya: build, CDN global, HTTPS otomatis, domain gratis <code>.vercel.app</code>.</p>
+
+    <h2>Buat Akun Vercel</h2>
+    <div class="steps">
+      <div class="step"><div class="stn">1</div><div class="stb"><div class="stt">Buka vercel.com → Sign Up</div><div class="stx">Pilih "Continue with GitHub" — ini cara paling mudah karena Vercel butuh akses ke repo GitHub-mu.</div></div></div>
+      <div class="step"><div class="stn">2</div><div class="stb"><div class="stt">Authorize Vercel di GitHub</div><div class="stx">GitHub akan meminta konfirmasi untuk memberikan izin ke Vercel. Klik "Authorize Vercel".</div></div></div>
+      <div class="step"><div class="stn">3</div><div class="stb"><div class="stt">Pilih plan — Hobby (gratis)</div><div class="stx">Plan Hobby sudah lebih dari cukup: unlimited deploys, domain .vercel.app, HTTPS, preview deployments.</div></div></div>
+    </div>
+
+    <h2>Deploy Project Pertama</h2>
+    <div class="steps">
+      <div class="step"><div class="stn">1</div><div class="stb"><div class="stt">Klik "Add New → Project"</div><div class="stx">Di dashboard Vercel.</div></div></div>
+      <div class="step"><div class="stn">2</div><div class="stb"><div class="stt">Import Git Repository</div><div class="stx">Vercel menampilkan daftar repo GitHub-mu. Cari repo yang ingin di-deploy, klik "Import".</div></div></div>
+      <div class="step"><div class="stn">3</div><div class="stb"><div class="stt">Konfigurasi build</div><div class="stx">Vercel biasanya auto-detect framework (Next.js, Vite, React, dll) dan mengisi Build Command + Output Directory secara otomatis. Untuk project sederhana HTML tidak perlu diubah.</div></div></div>
+      <div class="step"><div class="stn">4</div><div class="stb"><div class="stt">Klik "Deploy"</div><div class="stx">Vercel mulai proses build. Bisa lihat log real-time. Selesai dalam 30 detik sampai beberapa menit.</div></div></div>
+      <div class="step"><div class="stn">5</div><div class="stb"><div class="stt">Akses URL live</div><div class="stx">Setelah deploy selesai, Vercel memberikan URL seperti <code>nama-project.vercel.app</code> — langsung bisa dibuka siapapun.</div></div></div>
+    </div>
+
+    <div class="box tip"><div class="bi">✅</div><div class="bb2"><div class="bt">Auto-deploy setiap push</div><div class="bx">Setelah connected, setiap kali kamu push ke branch main di GitHub, Vercel otomatis build dan deploy ulang. Tidak perlu manual trigger. Ini yang membuat workflow Claude Code → GitHub → Vercel sangat powerful.</div></div></div>
+
+    <h2>Preview Deployments</h2>
+    <p>Setiap push ke branch selain main (misalnya feature branch) otomatis mendapat URL preview tersendiri — <code>nama-branch.nama-project.vercel.app</code>. Berguna untuk review sebelum merge ke production.</p>
+
+    <h2>📺 Video Tutorial</h2>
+    <ul>
+      <li><a href="https://www.youtube.com/results?search_query=cara+deploy+ke+Vercel+dari+GitHub+tutorial" target="_blank">🎬 "cara deploy ke Vercel dari GitHub tutorial"</a></li>
+      <li><a href="https://www.youtube.com/results?search_query=Vercel+tutorial+Indonesia+deploy+website+gratis" target="_blank">🎬 "Vercel tutorial Indonesia deploy website gratis"</a></li>
+      <li><a href="https://www.youtube.com/results?search_query=hosting+website+gratis+Vercel+2024" target="_blank">🎬 "hosting website gratis Vercel 2024"</a></li>
+    </ul>
+
+  </div>
+  <div class="chnav">
+    <button class="chnbtn" onclick="go('g3')"><div class="chnbtn-arrow">←</div><div><div class="chnl">Sebelumnya</div><div class="chnt">GitHub Desktop</div></div></button>
+    <button class="chnbtn next" onclick="go('v2')"><div><div class="chnl">Berikutnya</div><div class="chnt">Env Variables & Domain</div></div><div class="chnbtn-arrow">→</div></button>
+  </div>
+</section>
+
+<!-- ==================== V2: ENV & DOMAIN ==================== -->
+<section class="ch" id="v2">
+  <div class="eyebrow"><div class="ed"></div>Vercel · Bab 11</div>
+  <h1 class="chtitle">Environment Variables & Custom Domain</h1>
+  <p class="chsub">Simpan API key dengan aman dan pakai domain sendiri untuk tampilan yang lebih profesional.</p>
+  <div class="chmeta"><div class="cmi">⏱ ~15 menit</div><span class="badge bb">Menengah</span></div>
+  <div class="prose">
+
+    <h2>Environment Variables</h2>
+    <p>API key, database URL, dan secret lainnya tidak boleh di-hardcode di kode yang masuk ke GitHub. Simpan di Vercel sebagai Environment Variables — aman, tidak terekspos di repo.</p>
+    <div class="steps">
+      <div class="step"><div class="stn">1</div><div class="stb"><div class="stt">Masuk ke project settings</div><div class="stx">Dashboard Vercel → klik nama project → tab "Settings" → "Environment Variables".</div></div></div>
+      <div class="step"><div class="stn">2</div><div class="stb"><div class="stt">Tambah variable baru</div><div class="stx"><strong>Key</strong>: nama variabel, huruf besar dengan underscore (contoh: <code>ANTHROPIC_API_KEY</code>)<br><br><strong>Value</strong>: nilai aktualnya<br><br><strong>Environment</strong>: pilih Production, Preview, Development, atau All</div></div></div>
+      <div class="step"><div class="stn">3</div><div class="stb"><div class="stt">Redeploy</div><div class="stx">Setelah tambah env var, perlu trigger redeploy agar nilai baru terbaca. Deployments → Redeploy.</div></div></div>
+    </div>
+    <pre><code># Di kode (Node.js/Vite), akses env var seperti ini:
+process.env.ANTHROPIC_API_KEY    # Node.js
+import.meta.env.VITE_API_KEY     # Vite (harus prefix VITE_)</code></pre>
+    <div class="box danger"><div class="bi">🔒</div><div class="bb2"><div class="bt">Jangan pernah commit API key ke GitHub</div><div class="bx">Tambahkan <code>.env</code> ke file <code>.gitignore</code> sebelum commit. API key yang terekspos di GitHub public repo bisa langsung disalahgunakan oleh bot scanner dalam hitungan menit.</div></div></div>
+
+    <h2>Custom Domain</h2>
+    <div class="steps">
+      <div class="step"><div class="stn">1</div><div class="stb"><div class="stt">Beli domain</div><div class="stx">Beli domain di Namecheap, Cloudflare, GoDaddy, atau Niagahoster (untuk .id). Domain .com mulai $10–15/tahun.</div></div></div>
+      <div class="step"><div class="stn">2</div><div class="stb"><div class="stt">Settings → Domains → Add</div><div class="stx">Di project Vercel, masukkan nama domain yang ingin digunakan (contoh: <code>namaproject.com</code>).</div></div></div>
+      <div class="step"><div class="stn">3</div><div class="stb"><div class="stt">Update DNS di registrar domain</div><div class="stx">Vercel akan memberikan nameserver atau A record yang perlu ditambahkan di panel DNS registrar domainmu. Ikuti instruksinya.</div></div></div>
+      <div class="step"><div class="stn">4</div><div class="stb"><div class="stt">Tunggu propagasi DNS</div><div class="stx">Biasanya 5–30 menit, tapi bisa sampai 48 jam. Vercel otomatis generate SSL certificate setelah DNS aktif.</div></div></div>
+    </div>
+
+    <h2>Monitoring & Logs</h2>
+    <div class="tbl-wrap">
+      <table class="tbl">
+        <thead><tr><th>Tab</th><th>Isi</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Deployments</strong></td><td>Riwayat semua deploy, status (success/failed), log build</td></tr>
+          <tr><td><strong>Analytics</strong></td><td>Traffic, page views, performance metrics (plan berbayar)</td></tr>
+          <tr><td><strong>Logs</strong></td><td>Runtime logs dari serverless functions</td></tr>
+          <tr><td><strong>Speed Insights</strong></td><td>Core Web Vitals — seberapa cepat sitemu di mata user</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>📺 Video Tutorial</h2>
+    <ul>
+      <li><a href="https://www.youtube.com/results?search_query=Vercel+environment+variables+tutorial+cara+set" target="_blank">🎬 "Vercel environment variables tutorial"</a></li>
+      <li><a href="https://www.youtube.com/results?search_query=custom+domain+Vercel+gratis+cara+setting" target="_blank">🎬 "custom domain Vercel gratis cara setting"</a></li>
+      <li><a href="https://www.youtube.com/results?search_query=Vercel+dashboard+tutorial+deployment+logs" target="_blank">🎬 "Vercel dashboard tutorial deployment logs"</a></li>
+    </ul>
+
+  </div>
+  <div class="chnav">
+    <button class="chnbtn" onclick="go('v1')"><div class="chnbtn-arrow">←</div><div><div class="chnl">Sebelumnya</div><div class="chnt">Deploy dari GitHub</div></div></button>
+    <button class="chnbtn next" onclick="go('r1')"><div><div class="chnl">Berikutnya</div><div class="chnt">Replit — Buat Akun & Repl</div></div><div class="chnbtn-arrow">→</div></button>
+  </div>
+</section>
+
+<!-- ==================== R1: REPLIT AKUN ==================== -->
+<section class="ch" id="r1">
+  <div class="eyebrow"><div class="ed"></div>Replit · Bab 12</div>
+  <h1 class="chtitle">Buat Akun & Repl Pertama</h1>
+  <p class="chsub">Code editor, runtime, dan hosting dalam satu platform berbasis browser — tidak perlu install apapun di komputer.</p>
+  <div class="chmeta"><div class="cmi">⏱ ~15 menit</div><div class="cmi">🔗 replit.com</div><span class="badge bg">No-Install</span></div>
+  <div class="prose">
+
+    <h2>Replit vs GitHub + Vercel</h2>
+    <div class="tbl-wrap">
+      <table class="tbl">
+        <thead><tr><th></th><th>Replit</th><th>GitHub + Vercel</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Setup</strong></td><td>Langsung pakai, tanpa install</td><td>Perlu Git, Node.js, setup lokal</td></tr>
+          <tr><td><strong>Cocok untuk</strong></td><td>Prototipe cepat, belajar coding, eksperimen</td><td>Project serius yang butuh version control penuh</td></tr>
+          <tr><td><strong>Kolaborasi</strong></td><td>Real-time multiplayer editing (seperti Google Docs)</td><td>Lewat pull request dan branch</td></tr>
+          <tr><td><strong>AI Integration</strong></td><td>Replit AI built-in</td><td>Perlu tools eksternal (OpenCode, dll)</td></tr>
+          <tr><td><strong>Harga</strong></td><td>Gratis terbatas, paid untuk always-on</td><td>GitHub gratis, Vercel gratis dengan limit</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Buat Akun Replit</h2>
+    <div class="steps">
+      <div class="step"><div class="stn">1</div><div class="stb"><div class="stt">Buka replit.com → Sign Up</div><div class="stx">Tersedia: Continue with Google, GitHub, atau email.</div></div></div>
+      <div class="step"><div class="stn">2</div><div class="stb"><div class="stt">Isi username</div><div class="stx">Akan jadi bagian dari URL Repl-mu: <code>replit.com/@username/nama-repl</code>.</div></div></div>
+      <div class="step"><div class="stn">3</div><div class="stb"><div class="stt">Pilih bahasa yang ingin dipelajari</div><div class="stx">Onboarding wizard — pilih sesuai kebutuhan atau skip.</div></div></div>
+    </div>
+
+    <h2>Buat Repl Baru</h2>
+    <div class="steps">
+      <div class="step"><div class="stn">1</div><div class="stb"><div class="stt">Klik "+ Create Repl"</div><div class="stx">Di dashboard, tombol biru di pojok kanan atas atau tengah halaman.</div></div></div>
+      <div class="step"><div class="stn">2</div><div class="stb"><div class="stt">Pilih template</div><div class="stx">Ada ratusan template: Node.js, Python, HTML/CSS/JS, React, Bun, dll. Untuk web app sederhana pilih "HTML, CSS, JS".</div></div></div>
+      <div class="step"><div class="stn">3</div><div class="stb"><div class="stt">Beri nama Repl</div><div class="stx">Nama ini akan jadi bagian dari URL publik kalau di-publish.</div></div></div>
+      <div class="step"><div class="stn">4</div><div class="stb"><div class="stt">Klik "Create Repl"</div><div class="stx">Editor langsung terbuka di browser.</div></div></div>
+    </div>
+
+    <h2>Anatomi Interface Replit</h2>
+    <div class="grid2">
+      <div class="card"><div class="card-icon">📁</div><div class="card-title">Files Panel (Kiri)</div><div class="card-text">Struktur folder dan file project. Klik file untuk membukanya di editor.</div></div>
+      <div class="card"><div class="card-icon">✏️</div><div class="card-title">Editor (Tengah)</div><div class="card-text">Code editor dengan syntax highlighting, autocomplete, dan multi-cursor. Berbasis Monaco (sama seperti VS Code).</div></div>
+      <div class="card"><div class="card-icon">🖥</div><div class="card-title">Preview / Output (Kanan)</div><div class="card-text">Untuk web app: preview langsung di browser. Untuk script: terminal output.</div></div>
+      <div class="card"><div class="card-icon">💻</div><div class="card-title">Shell / Console</div><div class="card-text">Terminal penuh di bawah. Bisa install package, jalankan command, debug.</div></div>
+    </div>
+
+    <h2>Import dari GitHub</h2>
+    <div class="steps">
+      <div class="step"><div class="stn">1</div><div class="stb"><div class="stt">Create Repl → Import from GitHub</div><div class="stx">Ada opsi ini di dialog pembuatan Repl baru.</div></div></div>
+      <div class="step"><div class="stn">2</div><div class="stb"><div class="stt">Connect GitHub</div><div class="stx">Authorize Replit untuk akses repo GitHub-mu.</div></div></div>
+      <div class="step"><div class="stn">3</div><div class="stb"><div class="stt">Pilih repo</div><div class="stx">Replit akan clone dan setup environment otomatis.</div></div></div>
+    </div>
+
+    <h2>📺 Video Tutorial</h2>
+    <ul>
+      <li><a href="https://www.youtube.com/results?search_query=cara+daftar+Replit+tutorial+Indonesia+pemula" target="_blank">🎬 "cara daftar Replit tutorial Indonesia pemula"</a></li>
+      <li><a href="https://www.youtube.com/results?search_query=Replit+coding+online+gratis+tanpa+install" target="_blank">🎬 "Replit coding online gratis tanpa install"</a></li>
+      <li><a href="https://www.youtube.com/results?search_query=Replit+tutorial+membuat+project+pertama" target="_blank">🎬 "Replit tutorial membuat project pertama"</a></li>
+    </ul>
+
+  </div>
+  <div class="chnav">
+    <button class="chnbtn" onclick="go('v2')"><div class="chnbtn-arrow">←</div><div><div class="chnl">Sebelumnya</div><div class="chnt">Env & Domain</div></div></button>
+    <button class="chnbtn next" onclick="go('r2')"><div><div class="chnl">Berikutnya</div><div class="chnt">Code & Deploy di Replit</div></div><div class="chnbtn-arrow">→</div></button>
+  </div>
+</section>
+
+<!-- ==================== R2: REPLIT DEPLOY ==================== -->
+<section class="ch" id="r2">
+  <div class="eyebrow"><div class="ed"></div>Replit · Bab 13</div>
+  <h1 class="chtitle">Code, Run & Deploy di Replit</h1>
+  <p class="chsub">Jalankan kode, install package, dan publish ke URL publik — semuanya dari browser tanpa setup lokal.</p>
+  <div class="chmeta"><div class="cmi">⏱ ~20 menit</div><span class="badge bg">Praktis</span></div>
+  <div class="prose">
+
+    <h2>Run Kode</h2>
+    <p>Klik tombol hijau <strong>▶ Run</strong> di atas editor. Replit akan:</p>
+    <ol>
+      <li>Install dependencies yang dibutuhkan (otomatis baca <code>package.json</code> atau <code>requirements.txt</code>)</li>
+      <li>Jalankan entry point yang dikonfigurasi di file <code>.replit</code></li>
+      <li>Tampilkan output di panel kanan atau terminal</li>
+    </ol>
+    <div class="box info"><div class="bi">💡</div><div class="bb2"><div class="bt">Hot reload</div><div class="bx">Untuk web app, Replit mendukung hot reload — perubahan di editor otomatis ter-refresh di preview tanpa perlu klik Run ulang.</div></div></div>
+
+    <h2>Install Package</h2>
+    <pre><code># Di Shell/Console panel (bawah):
+
+# Node.js / npm
+npm install nama-package
+
+# Python
+pip install nama-package
+
+# Atau klik ikon kotak di panel kiri → search package → Install</code></pre>
+
+    <h2>Environment Variables di Replit</h2>
+    <div class="steps">
+      <div class="step"><div class="stn">1</div><div class="stb"><div class="stt">Klik ikon 🔒 Secrets di panel kiri</div><div class="stx">Atau lewat Tools → Secrets.</div></div></div>
+      <div class="step"><div class="stn">2</div><div class="stb"><div class="stt">Tambah key & value</div><div class="stx">Contoh: Key = <code>ANTHROPIC_API_KEY</code>, Value = <code>sk-ant-...</code>. Klik "Add new secret".</div></div></div>
+      <div class="step"><div class="stn">3</div><div class="stb"><div class="stt">Akses di kode</div><div class="stx">Node.js: <code>process.env.ANTHROPIC_API_KEY</code><br>Python: <code>os.environ.get("ANTHROPIC_API_KEY")</code></div></div></div>
+    </div>
+
+    <h2>Deploy / Publish</h2>
+    <p>Replit punya beberapa opsi publish:</p>
+    <div class="tbl-wrap">
+      <table class="tbl">
+        <thead><tr><th>Opsi</th><th>Keterangan</th><th>Harga</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Share link</strong></td><td>URL preview yang aktif selama Repl terbuka. Mati kalau tab browser ditutup.</td><td>Gratis</td></tr>
+          <tr><td><strong>Static Deploy</strong></td><td>Untuk HTML/CSS/JS statis — always on, URL permanen.</td><td>Gratis</td></tr>
+          <tr><td><strong>Autoscale Deploy</strong></td><td>Untuk web app dengan backend — always on, scale otomatis.</td><td>Berbayar</td></tr>
+          <tr><td><strong>Reserved VM</strong></td><td>Server dedicated — untuk app yang butuh resource konsisten.</td><td>Berbayar</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Static Deploy (Gratis)</h3>
+    <div class="steps">
+      <div class="step"><div class="stn">1</div><div class="stb"><div class="stt">Klik "Deploy" di pojok kanan atas</div><div class="stx">Tombol roket 🚀.</div></div></div>
+      <div class="step"><div class="stn">2</div><div class="stb"><div class="stt">Pilih "Static"</div><div class="stx">Cocok untuk web app HTML/CSS/JS tanpa backend.</div></div></div>
+      <div class="step"><div class="stn">3</div><div class="stb"><div class="stt">Klik "Deploy"</div><div class="stx">Replit build dan publish ke URL <code>nama-repl.repl.co</code> — always on, tidak mati.</div></div></div>
+    </div>
+
+    <h2>Replit AI — Coding Assistant Bawaan</h2>
+    <p>Replit punya AI assistant built-in (berbasis Claude). Cara pakai:</p>
+    <ul>
+      <li><strong>Chat</strong>: Panel AI di sidebar kiri — tanya apapun tentang kode</li>
+      <li><strong>Inline edit</strong>: Select kode → klik "Edit with AI" → tulis instruksi</li>
+      <li><strong>Generate</strong>: Ketik komentar deskriptif di editor → Tab untuk autocomplete kode</li>
+    </ul>
+
+    <h2>📺 Video Tutorial</h2>
+    <ul>
+      <li><a href="https://www.youtube.com/results?search_query=deploy+project+Replit+tutorial+Indonesia" target="_blank">🎬 "deploy project Replit tutorial Indonesia"</a></li>
+      <li><a href="https://www.youtube.com/results?search_query=Replit+AI+assistant+cara+pakai+tutorial" target="_blank">🎬 "Replit AI assistant cara pakai tutorial"</a></li>
+      <li><a href="https://www.youtube.com/results?search_query=Replit+coding+tutorial+web+app+pemula" target="_blank">🎬 "Replit coding tutorial web app pemula"</a></li>
+    </ul>
+
+  </div>
+  <div class="chnav">
+    <button class="chnbtn" onclick="go('r1')"><div class="chnbtn-arrow">←</div><div><div class="chnl">Sebelumnya</div><div class="chnt">Buat Akun & Repl</div></div></button>
+    <button class="chnbtn next" onclick="go('o3')"><div><div class="chnl">Berikutnya</div><div class="chnt">OpenCode Desktop App</div></div><div class="chnbtn-arrow">→</div></button>
+  </div>
+</section>
+
+<!-- ==================== O3: OPENCODE DESKTOP ==================== -->
+<section class="ch" id="o3">
+  <div class="eyebrow"><div class="ed"></div>OpenCode · Bab 14</div>
+  <h1 class="chtitle">OpenCode Desktop App</h1>
+  <p class="chsub">Cara termudah pakai OpenCode — tampilan visual, klik-klik langsung bisa jalan. Sudah include model gratis <strong>Big Pickle</strong> bawaan, tidak perlu API key untuk mulai.</p>
+  <div class="chmeta"><div class="cmi">⏱ ~20 menit</div><div class="cmi">🔗 opencode.ai</div><span class="badge bg">GUI</span></div>
+  <div class="prose">
+
+    <h2>Download & Install Desktop App</h2>
+    <div class="steps">
+      <div class="step"><div class="stn">1</div><div class="stb"><div class="stt">Download dari opencode.ai</div><div class="stx">Buka <a href="https://opencode.ai" target="_blank">opencode.ai</a> → klik "Download" → pilih platform: <strong>macOS</strong> (.dmg), <strong>Windows</strong> (.exe installer), atau <strong>Linux</strong> (.AppImage / .deb).</div></div></div>
+      <div class="step"><div class="stn">2</div><div class="stb"><div class="stt">Install</div><div class="stx"><strong>macOS</strong>: buka .dmg → drag OpenCode ke Applications → buka dari Launchpad.<br><strong>Windows</strong>: jalankan installer .exe → Next-next-Finish seperti biasa.<br><strong>Linux</strong>: <code>chmod +x opencode.AppImage && ./opencode.AppImage</code></div></div></div>
+      <div class="step"><div class="stn">3</div><div class="stb"><div class="stt">First launch — pilih model</div><div class="stx">Saat pertama buka, kamu akan diminta pilih model. Pilih <strong>Big Pickle</strong> untuk langsung pakai gratis tanpa perlu API key apapun!</div></div></div>
+    </div>
+    <div class="box warn"><div class="bi">⚠️</div><div class="bb2"><div class="bt">macOS Gatekeeper</div><div class="bx">Kalau muncul "Cannot be opened because it is from unidentified developer": buka System Preferences → Security & Privacy → klik "Open Anyway".</div></div></div>
+    <div class="box tip"><div class="bi">🥒</div><div class="bb2"><div class="bt">Mau langsung gratis? Pilih Big Pickle!</div><div class="bx">Di selector model ada pilihan <strong>Big Pickle</strong> — model gratis bawaan OpenCode. Tidak perlu daftar ke mana-mana, tidak perlu kartu kredit. Pilih Big Pickle dan langsung coding!</div></div></div>
+
+    <h2>Peta Interface Desktop App</h2>
+    <div class="grid2">
+      <div class="card"><div class="card-icon">📁</div><div class="card-title">Project Explorer (Kiri)</div><div class="card-text">Buka folder project, browse file tree, klik file untuk preview. Drag & drop folder langsung ke panel ini.</div></div>
+      <div class="card"><div class="card-icon">💬</div><div class="card-title">Chat Panel (Tengah)</div><div class="card-text">Area utama chat dengan AI. Mendukung Markdown rendering, syntax highlighting kode, dan inline file preview.</div></div>
+      <div class="card"><div class="card-icon">📝</div><div class="card-title">Diff Viewer (Kanan)</div><div class="card-text">Tampilkan perubahan file secara visual — line-by-line diff dengan warna merah (hapus) dan hijau (tambah).</div></div>
+      <div class="card"><div class="card-icon">💻</div><div class="card-title">Integrated Terminal</div><div class="card-text">Terminal bawaan di bawah — jalankan perintah shell tanpa pindah aplikasi. AI bisa baca output terminal.</div></div>
+    </div>
+
+    <h2>Buka Project</h2>
+    <div class="steps">
+      <div class="step"><div class="stn">1</div><div class="stb"><div class="stt">File → Open Folder</div><div class="stx">Atau shortcut <span class="tag">⌘/Ctrl+O</span>. Pilih folder root project yang ingin dikerjakan.</div></div></div>
+      <div class="step"><div class="stn">2</div><div class="stb"><div class="stt">OpenCode scan project</div><div class="stx">App otomatis baca struktur folder, deteksi bahasa pemrograman, baca <code>CLAUDE.md</code> atau <code>opencode.json</code> kalau ada.</div></div></div>
+      <div class="step"><div class="stn">3</div><div class="stb"><div class="stt">Mulai chat</div><div class="stx">Ketik instruksi di chat panel. AI sudah punya konteks seluruh project — tidak perlu upload file manual.</div></div></div>
+    </div>
+
+    <h2>Fitur Eksklusif Desktop App</h2>
+
+    <h3>Visual Diff & Apply</h3>
+    <p>Ketika AI mengusulkan perubahan kode, Desktop App menampilkan diff visual sebelum diterapkan:</p>
+    <ul>
+      <li>Panel kanan menampilkan perubahan per file dengan highlight merah/hijau</li>
+      <li>Tombol <strong>"Apply"</strong> per file — pilih mana yang mau diterapkan, mana yang tidak</li>
+      <li>Tombol <strong>"Apply All"</strong> untuk terapkan semua perubahan sekaligus</li>
+      <li>Tombol <strong>"Reject"</strong> untuk buang perubahan yang tidak diinginkan</li>
+    </ul>
+    <div class="box tip"><div class="bi">✅</div><div class="bb2"><div class="bt">Lebih aman dari CLI</div><div class="bx">Di CLI, AI langsung tulis ke file. Di Desktop App, semua perubahan masuk tahap "staging" dulu — kamu bisa review baris per baris sebelum memutuskan apply atau tidak.</div></div></div>
+
+    <h3>Multi-File Context Selector</h3>
+    <div class="steps">
+      <div class="step"><div class="stn">1</div><div class="stb"><div class="stt">Klik ikon 📎 di chat input</div><div class="stx">Atau ketik <code>@</code> diikuti nama file — autocomplete muncul.</div></div></div>
+      <div class="step"><div class="stn">2</div><div class="stb"><div class="stt">Pilih file yang relevan</div><div class="stx">Bisa pilih banyak file sekaligus. File terpilih muncul sebagai "chip" di atas input.</div></div></div>
+      <div class="step"><div class="stn">3</div><div class="stb"><div class="stt">Kirim pesan</div><div class="stx">AI membaca isi file yang dipilih sebagai konteks utama — lebih akurat daripada biarkan AI scan seluruh project.</div></div></div>
+    </div>
+
+    <h3>Keyboard Shortcuts Lengkap</h3>
+    <div class="tbl-wrap">
+      <table class="tbl">
+        <thead><tr><th>Shortcut</th><th>Fungsi</th></tr></thead>
+        <tbody>
+          <tr><td><span class="tag">⌘/Ctrl + O</span></td><td>Buka folder project</td></tr>
+          <tr><td><span class="tag">⌘/Ctrl + N</span></td><td>Sesi chat baru</td></tr>
+          <tr><td><span class="tag">⌘/Ctrl + K</span></td><td>Command palette</td></tr>
+          <tr><td><span class="tag">⌘/Ctrl + Enter</span></td><td>Kirim pesan</td></tr>
+          <tr><td><span class="tag">⌘/Ctrl + Z</span></td><td>Undo perubahan file terakhir</td></tr>
+          <tr><td><span class="tag">⌘/Ctrl + Shift + D</span></td><td>Toggle diff viewer panel</td></tr>
+          <tr><td><span class="tag">⌘/Ctrl + `</span></td><td>Toggle integrated terminal</td></tr>
+          <tr><td><span class="tag">@</span> di chat</td><td>Mention file — muncul autocomplete file</td></tr>
+          <tr><td><span class="tag">/</span> di chat</td><td>Slash commands</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="box tip"><div class="bi">🚀</div><div class="bb2"><div class="bt">Tidak mau belajar CLI dulu? Skip ke Tutorial Build!</div><div class="bx">Kamu bisa langsung ke <strong>Bab 17 — Tutorial Build</strong> dan praktek bikin project nyata menggunakan Desktop App ini. Bab CLI bisa dibaca belakangan.</div></div></div>
+
+    <h2>📺 Video Tutorial</h2>
+    <ul>
+      <li><a href="https://www.youtube.com/results?search_query=OpenCode+Desktop+App+tutorial+cara+pakai" target="_blank">🎬 "OpenCode Desktop App tutorial cara pakai"</a></li>
+      <li><a href="https://www.youtube.com/results?search_query=AI+coding+desktop+app+review+OpenCode+Cursor" target="_blank">🎬 "AI coding desktop app review OpenCode vs Cursor"</a></li>
+      <li><a href="https://www.youtube.com/results?search_query=vibe+coding+AI+desktop+tool+tutorial+pemula" target="_blank">🎬 "vibe coding AI desktop tool tutorial pemula"</a></li>
+    </ul>
+
+  </div>
+  <div class="chnav">
+    <button class="chnbtn" onclick="go('r2')"><div class="chnbtn-arrow">←</div><div><div class="chnl">Sebelumnya</div><div class="chnt">Code & Deploy di Replit</div></div></button>
+    <button class="chnbtn next" onclick="go('o1')"><div><div class="chnl">Berikutnya</div><div class="chnt">OpenCode — Install & Setup CLI</div></div><div class="chnbtn-arrow">→</div></button>
+  </div>
+</section>
+
+<!-- ==================== O1: OPENCODE SETUP ==================== -->
+<section class="ch" id="o1">
+  <div class="eyebrow"><div class="ed"></div>OpenCode · Bab 15</div>
+  <h1 class="chtitle">OpenCode — Install & Setup CLI</h1>
+  <p class="chsub">Cara pakai OpenCode lewat terminal — untuk yang ingin lebih advanced. Termasuk model gratis <strong>Big Pickle</strong> bawaan, tidak perlu API key untuk mulai.</p>
+  <div class="chmeta"><div class="cmi">⏱ ~20 menit</div><div class="cmi">🔗 opencode.ai</div><span class="badge bb">Terminal</span></div>
+  <div class="prose">
+
+    <h2>Apa itu OpenCode?</h2>
+    <p>OpenCode adalah AI coding assistant yang berjalan di terminal, open-source, dan mendukung berbagai model AI. Mirip Claude Code (Anthropic) tapi bisa dipakai dengan berbagai provider: Anthropic, OpenAI, Google Gemini, Mistral, bahkan model lokal via Ollama.</p>
+    <div class="grid2">
+      <div class="card"><div class="card-icon">🔓</div><div class="card-title">Open Source</div><div class="card-text">Source code tersedia di GitHub. Bisa dikustomisasi sesuai kebutuhan.</div></div>
+      <div class="card"><div class="card-icon">🤖</div><div class="card-title">Multi-Provider</div><div class="card-text">Satu interface, banyak AI: Anthropic, OpenAI, Gemini, Groq, dan lainnya.</div></div>
+      <div class="card"><div class="card-icon">💻</div><div class="card-title">Terminal-Native</div><div class="card-text">Berjalan di terminal — terintegrasi langsung dengan workflow developer.</div></div>
+      <div class="card"><div class="card-icon">📁</div><div class="card-title">File System Access</div><div class="card-text">Bisa baca, tulis, dan edit file di project yang sedang dikerjakan.</div></div>
+    </div>
+
+    <div class="box tip"><div class="bi">🥒</div><div class="bb2"><div class="bt">Mau coba dulu tanpa install? Pakai Desktop App!</div><div class="bx">Kalau kamu baru mulai, <strong>Bab 14 (Desktop App)</strong> lebih mudah — tinggal download dan klik. CLI di bab ini untuk yang ingin pakai dari terminal atau sudah nyaman dengan command line.</div></div></div>
+
+    <h2>Prerequisites</h2>
+    <p>Sebelum install OpenCode CLI, pastikan sudah ada:</p>
+    <ul>
+      <li><strong>Node.js</strong> versi 18 ke atas — cek dengan <code>node --version</code></li>
+      <li><strong>npm</strong> atau <strong>bun</strong> — biasanya sudah bundled dengan Node.js</li>
+    </ul>
+    <pre><code># Cek versi Node.js
+node --version
+# Output: v20.x.x atau lebih baru
+
+# Kalau belum ada, download dari nodejs.org (pilih LTS)</code></pre>
+
+    <h2>Install OpenCode</h2>
+    <pre><code># Cara 1: Install global via npm (recommended)
+npm install -g opencode-ai
+
+# Cara 2: Jalankan langsung tanpa install (npx)
+npx opencode-ai
+
+# Cara 3: Install via bun
+bun install -g opencode-ai
+
+# Verifikasi instalasi
+opencode --version</code></pre>
+
+    <h2>🆓 Pakai OpenCode Gratis — Big Pickle!</h2>
+    <p>OpenCode sudah punya model gratis bawaan bernama <strong>Big Pickle</strong>. Tidak perlu daftar ke mana-mana, tidak perlu API key, tidak perlu kartu kredit. Langsung pakai!</p>
+    <div class="box tip"><div class="bi">🥒</div><div class="bb2"><div class="bt">Big Pickle — model gratis bawaan OpenCode</div><div class="bx">Cukup pilih dari dropdown model, langsung bisa coding tanpa biaya apapun.</div></div></div>
+
+    <h3>Cara Aktifkan Big Pickle</h3>
+    <div class="steps">
+      <div class="step"><div class="stn">1</div><div class="stb"><div class="stt">Buka OpenCode</div><div class="stx">Jalankan <code>opencode</code> di terminal, atau buka lewat Desktop App (lihat Bab 14).</div></div></div>
+      <div class="step"><div class="stn">2</div><div class="stb"><div class="stt">Pilih model Big Pickle</div><div class="stx">Di dalam OpenCode, tekan <span class="tag">/</span> lalu ketik <code>model</code> untuk buka model selector — atau langsung cari "Big Pickle" di dropdown. Pilih dan langsung siap pakai!</div></div></div>
+      <div class="step"><div class="stn">3</div><div class="stb"><div class="stt">Mulai coding gratis</div><div class="stx">Tidak ada langkah lain. Big Pickle langsung aktif — ketik instruksi dan AI akan merespons tanpa perlu bayar.</div></div></div>
+    </div>
+
+    <h2>Konfigurasi API Key (opsional)</h2>
+    <div class="steps">
+      <div class="step"><div class="stn">1</div><div class="stb"><div class="stt">Dapatkan API key Anthropic</div><div class="stx">Buka <a href="https://console.anthropic.com" target="_blank">console.anthropic.com</a> → login → API Keys → Create Key. Copy key-nya (dimulai dengan <code>sk-ant-</code>).</div></div></div>
+      <div class="step"><div class="stn">2</div><div class="stb"><div class="stt">Set environment variable</div><div class="stx"><strong>Mac/Linux</strong> — tambahkan ke <code>~/.zshrc</code> atau <code>~/.bashrc</code>:<br><code>export ANTHROPIC_API_KEY="sk-ant-..."</code><br><br><strong>Windows</strong> — tambahkan ke System Environment Variables:<br><code>setx ANTHROPIC_API_KEY "sk-ant-..."</code></div></div></div>
+      <div class="step"><div class="stn">3</div><div class="stb"><div class="stt">Reload terminal</div><div class="stx">Tutup dan buka ulang terminal, atau jalankan <code>source ~/.zshrc</code>.</div></div></div>
+    </div>
+
+    <div class="box warn"><div class="bi">⚠️</div><div class="bb2"><div class="bt">Jangan simpan API key di config file</div><div class="bx">Config file bisa masuk ke Git repo. Selalu simpan API key di environment variable, bukan di file konfigurasi yang mungkin di-commit.</div></div></div>
+
+    <h2>Link Referensi</h2>
+    <ul>
+      <li>🌐 <a href="https://opencode.ai" target="_blank">opencode.ai</a> — website resmi &amp; download</li>
+      <li>📦 <a href="https://github.com/sst/opencode" target="_blank">github.com/sst/opencode</a> — source code (open source)</li>
+      <li>📖 <a href="https://opencode.ai/docs" target="_blank">opencode.ai/docs</a> — dokumentasi lengkap</li>
+    </ul>
+
+    <h2>📺 Video Tutorial</h2>
+    <ul>
+      <li><a href="https://www.youtube.com/results?search_query=OpenCode+SST+tutorial" target="_blank">🎬 "OpenCode SST tutorial"</a></li>
+      <li><a href="https://www.youtube.com/results?search_query=OpenCode+AI+coding+assistant+setup" target="_blank">🎬 "OpenCode AI coding assistant setup"</a></li>
+      <li><a href="https://www.youtube.com/results?search_query=vibe+coding+free+AI+tools" target="_blank">🎬 "vibe coding free AI tools"</a></li>
+    </ul>
+
+  </div>
+  <div class="chnav">
+    <button class="chnbtn" onclick="go('o3')"><div class="chnbtn-arrow">←</div><div><div class="chnl">Sebelumnya</div><div class="chnt">OpenCode Desktop App</div></div></button>
+    <button class="chnbtn next" onclick="go('o2')"><div><div class="chnl">Berikutnya</div><div class="chnt">OpenCode — Cara Pakai CLI</div></div><div class="chnbtn-arrow">→</div></button>
+  </div>
+</section>
+
+<!-- ==================== O2: OPENCODE USAGE ==================== -->
+<section class="ch" id="o2">
+  <div class="eyebrow"><div class="ed"></div>OpenCode · Bab 16</div>
+  <h1 class="chtitle">Cara Pakai OpenCode CLI</h1>
+  <p class="chsub">Dari membuka sesi pertama sampai workflow coding AI sehari-hari di terminal.</p>
+  <div class="chmeta"><div class="cmi">⏱ ~20 menit</div><span class="badge bb">Terminal</span></div>
+  <div class="prose">
+
+    <h2>Mulai Sesi OpenCode</h2>
+    <pre><code># Masuk ke folder project dulu
+cd /path/to/project
+
+# Jalankan OpenCode
+opencode
+
+# OpenCode membaca semua file di folder ini sebagai konteks</code></pre>
+    <p>Interface terminal akan muncul — mirip chat, tapi AI bisa membaca dan mengubah file di folder project secara langsung.</p>
+
+    <h2>Command Dasar di Dalam Sesi</h2>
+    <div class="tbl-wrap">
+      <table class="tbl">
+        <thead><tr><th>Command</th><th>Fungsi</th></tr></thead>
+        <tbody>
+          <tr><td><code>/help</code></td><td>Tampilkan semua command yang tersedia</td></tr>
+          <tr><td><code>/model</code></td><td>Ganti model AI (claude-sonnet, gpt-4o, dll)</td></tr>
+          <tr><td><code>/clear</code></td><td>Bersihkan history percakapan di sesi ini</td></tr>
+          <tr><td><code>/cost</code></td><td>Lihat estimasi biaya token yang sudah terpakai</td></tr>
+          <tr><td><code>/diff</code></td><td>Lihat semua perubahan file yang dibuat AI di sesi ini</td></tr>
+          <tr><td><code>/undo</code></td><td>Batalkan perubahan file terakhir yang dibuat AI</td></tr>
+          <tr><td><code>Ctrl+C</code></td><td>Batalkan respons AI yang sedang berjalan</td></tr>
+          <tr><td><code>Ctrl+D</code> / <code>/exit</code></td><td>Keluar dari OpenCode</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Contoh Workflow Nyata</h2>
+    <pre><code># 1. Minta AI buat file baru
+"Buat file komponen React bernama UserCard.jsx.
+ Komponen ini menerima props: name, email, avatar.
+ Tampilkan sebagai card dengan Tailwind CSS."
+
+# 2. AI akan membuat file dan menampilkan isinya
+
+# 3. Minta revisi spesifik
+"Tambahkan prop 'role' dan tampilkan sebagai badge
+ di pojok kanan atas card."
+
+# 4. Lihat semua perubahan
+/diff
+
+# 5. Kalau puas, commit ke GitHub
+# (keluar dari OpenCode dulu, lalu git add + commit)</code></pre>
+
+    <h2>CLAUDE.md — Instruksi Permanen untuk AI</h2>
+    <p>Buat file <code>CLAUDE.md</code> di root project untuk memberikan konteks permanen yang dibaca AI setiap sesi:</p>
+    <pre><code># Project: Dashboard Analytics PT XYZ
+
+## Stack
+- Frontend: React + Vite + Tailwind CSS
+- Backend: Express.js
+- Database: PostgreSQL via Prisma
+
+## Konvensi kode
+- Gunakan TypeScript, bukan JavaScript
+- Komponen React: functional, tidak pakai class
+- Naming: camelCase untuk variabel, PascalCase untuk komponen
+- Semua teks user-facing dalam Bahasa Indonesia
+
+## Yang tidak boleh diubah
+- File .env dan konfigurasi database
+- Struktur tabel di schema.prisma tanpa diskusi dulu</code></pre>
+
+    <h2>Tips Efisiensi</h2>
+    <ul>
+      <li><strong>Satu task per sesi</strong> — buka sesi baru untuk task yang berbeda agar konteks tidak bercampur</li>
+      <li><strong>Selalu review dengan /diff</strong> sebelum commit — AI bisa membuat perubahan di banyak file sekaligus</li>
+      <li><strong>Pakai /undo</strong> kalau perubahan tidak sesuai harapan, jauh lebih cepat dari revert manual</li>
+      <li><strong>Instruksi spesifik lebih baik</strong> — "tambah error handling untuk kasus API timeout" lebih efektif dari "perbaiki kode ini"</li>
+    </ul>
+
+    <div class="box tip"><div class="bi">🚀</div><div class="bb2"><div class="bt">Sudah cukup teori? Langsung ke Tutorial Build!</div><div class="bx">Kalau mau langsung praktek tanpa harus hafal semua perintah dulu, loncat ke <strong>Bab 17 — Tutorial Build</strong>. Kamu bisa belajar command-command di atas sambil jalan saat mengerjakan project nyata.</div></div></div>
+
+    <h2>📺 Video Tutorial</h2>
+    <ul>
+      <li><a href="https://www.youtube.com/results?search_query=OpenCode+CLI+tutorial+cara+pakai+terminal" target="_blank">🎬 "OpenCode CLI tutorial cara pakai terminal"</a></li>
+      <li><a href="https://www.youtube.com/results?search_query=AI+coding+terminal+workflow+vibe+coding" target="_blank">🎬 "AI coding terminal workflow vibe coding"</a></li>
+      <li><a href="https://www.youtube.com/results?search_query=Claude+Code+vs+OpenCode+terminal+comparison" target="_blank">🎬 "Claude Code vs OpenCode terminal comparison"</a></li>
+    </ul>
+
+  </div>
+  <div class="chnav">
+    <button class="chnbtn" onclick="go('o1')"><div class="chnbtn-arrow">←</div><div><div class="chnl">Sebelumnya</div><div class="chnt">OpenCode — Install & Setup CLI</div></div></button>
+    <button class="chnbtn next" onclick="go('o4')"><div><div class="chnl">Berikutnya</div><div class="chnt">OpenCode — Tutorial Build</div></div><div class="chnbtn-arrow">→</div></button>
+  </div>
+</section>
+
+<!-- ==================== O4: OPENCODE BUILD TUTORIAL ==================== -->
+<section class="ch" id="o4">
+  <div class="eyebrow"><div class="ed"></div>OpenCode · Tutorial</div>
+  <h1 class="chtitle">Tutorial: Build Link-in-Bio Page</h1>
+  <p class="chsub">Dari folder kosong sampai halaman live di Vercel — step by step menggunakan OpenCode + model gratis Big Pickle.</p>
+  <div class="chmeta"><div class="cmi">⏱ ~45 menit</div><div class="cmi">📦 HTML · CSS · JS</div><span class="badge bg">Gratis</span></div>
+  <div class="prose">
+
+    <div class="box info"><div class="bi">🎯</div><div class="bb2"><div class="bt">Yang akan dibuat</div><div class="bx">Halaman link-in-bio personal: foto profil, nama, bio singkat, dan daftar link ke sosmed/portfolio. Deploy ke Vercel dengan URL sendiri. Cocok sebagai halaman pengganti Linktree.</div></div></div>
+
+    <h2>Persiapan</h2>
+    <div class="steps">
+      <div class="step"><div class="stn">1</div><div class="stb"><div class="stt">Pilih model Big Pickle (gratis!)</div><div class="stx">OpenCode sudah punya model gratis bawaan bernama Big Pickle — tidak perlu API key apapun. Buka OpenCode, pilih Big Pickle dari dropdown model, dan langsung siap.</div></div></div>
+      <div class="step"><div class="stn">2</div><div class="stb"><div class="stt">Buat folder project</div><div class="stx"><pre><code>mkdir link-in-bio
+cd link-in-bio</code></pre></div></div></div>
+      <div class="step"><div class="stn">3</div><div class="stb"><div class="stt">Buat repo GitHub</div><div class="stx">Buka <a href="https://github.com/new" target="_blank">github.com/new</a> → nama: <code>link-in-bio</code> → centang README → Create. Clone ke folder yang baru dibuat.</div></div></div>
+      <div class="step"><div class="stn">4</div><div class="stb"><div class="stt">Buka OpenCode di folder ini</div><div class="stx"><code>opencode</code> — atau buka lewat Desktop App → Open Folder.</div></div></div>
+    </div>
+
+    <h2>Step 1: Buat Struktur HTML Dasar</h2>
+    <p>Ketik di chat OpenCode:</p>
+    <pre><code>Buat file index.html untuk halaman link-in-bio.
+Struktur yang dibutuhkan:
+- Foto profil (pakai placeholder dari picsum.photos)
+- Nama: [tulis nama kamu]
+- Bio: [tulis bio singkat]
+- 5 tombol link: Instagram, LinkedIn, GitHub, Portfolio, Email
+
+Gunakan HTML5 semantik yang valid. Belum perlu styling dulu.</code></pre>
+
+    <h2>Step 2: Tambah Styling Modern</h2>
+    <pre><code>Sekarang buat file style.css dan link ke index.html.
+Desain yang diinginkan:
+- Background gelap (#0F172A atau gradien gelap)
+- Card putih/transparan di tengah, max-width 400px, centered
+- Foto profil bulat 100px, border putih 3px
+- Font: Google Fonts Inter
+- Tombol link: lebar penuh, rounded, hover effect
+- Setiap tombol punya warna berbeda sesuai platform
+- Responsive di mobile
+Jangan pakai framework CSS. Vanilla CSS saja.</code></pre>
+
+    <h2>Step 3: Tambah Animasi & Interaktivitas</h2>
+    <pre><code>Tambahkan:
+1. Animasi fade-in saat halaman load (CSS keyframes)
+2. Tombol copy email ke clipboard — klik tombol Email,
+   muncul tooltip "Copied!"
+3. Counter klik sederhana di localStorage — setiap tombol
+   dicatat, total klik tampil di pojok kanan atas "X visits"
+Buat file script.js terpisah dan link ke index.html.</code></pre>
+
+    <h2>Step 4: Review & Polish</h2>
+    <pre><code>Review seluruh kode dan:
+1. Pastikan HTML valid — tidak ada tag yang tidak tertutup
+2. Cek accessibility — semua link punya aria-label
+3. Tambah meta tags SEO: title, description, og:image
+4. Tambah favicon sederhana (bisa pakai emoji via SVG)
+5. Pastikan tampil baik di mobile (cek di DevTools)</code></pre>
+    <div class="box tip"><div class="bi">✅</div><div class="bb2"><div class="bt">Pakai /diff sebelum lanjut</div><div class="bx">Setelah setiap step, ketik <code>/diff</code> di OpenCode untuk lihat semua perubahan. Kalau ada yang tidak sesuai, ketik <code>/undo</code> dan instruksikan ulang dengan lebih spesifik.</div></div></div>
+
+    <h2>Step 5: Deploy ke Vercel</h2>
+    <div class="steps">
+      <div class="step"><div class="stn">1</div><div class="stb"><div class="stt">Commit & push ke GitHub</div><div class="stx"><pre><code>git add .
+git commit -m "feat: link-in-bio halaman selesai"
+git push origin main</code></pre></div></div></div>
+      <div class="step"><div class="stn">2</div><div class="stb"><div class="stt">Import ke Vercel</div><div class="stx">Buka <a href="https://vercel.com/new" target="_blank">vercel.com/new</a> → Import repo <code>link-in-bio</code> → Framework: Other → Deploy.</div></div></div>
+      <div class="step"><div class="stn">3</div><div class="stb"><div class="stt">Akses URL live</div><div class="stx">Dalam 30 detik dapat URL <code>link-in-bio-xxx.vercel.app</code> — sudah live dan bisa dibagikan.</div></div></div>
+    </div>
+
+    <h2>📺 Video Referensi</h2>
+    <ul>
+      <li><a href="https://www.youtube.com/results?search_query=build+linktree+clone+HTML+CSS+tutorial" target="_blank">🎬 "build linktree clone HTML CSS tutorial"</a></li>
+      <li><a href="https://www.youtube.com/results?search_query=deploy+HTML+Vercel+tutorial" target="_blank">🎬 "deploy HTML to Vercel tutorial"</a></li>
+      <li><a href="https://www.youtube.com/results?search_query=vibe+coding+project+beginner+AI" target="_blank">🎬 "vibe coding project beginner AI"</a></li>
+    </ul>
+
+  </div>
+  <div class="chnav">
+    <button class="chnbtn" onclick="go('o2')"><div class="chnbtn-arrow">←</div><div><div class="chnl">Sebelumnya</div><div class="chnt">OpenCode — Cara Pakai CLI</div></div></button>
+    <button class="chnbtn next" onclick="go('m1')"><div><div class="chnl">Berikutnya</div><div class="chnt">Mimocode — Setup & Workflow</div></div><div class="chnbtn-arrow">→</div></button>
+  </div>
+</section>
+
+<!-- ==================== M1: MIMOCODE ==================== -->
+<section class="ch" id="m1">
+  <div class="eyebrow"><div class="ed"></div>Mimocode · Bab 18</div>
+  <h1 class="chtitle">Mimocode — Setup & Workflow</h1>
+  <p class="chsub">AI coding assistant dengan model gratis bawaan Mimo Auto — bisa langsung dipakai tanpa API key, cocok untuk belajar dan project sehari-hari.</p>
+  <div class="chmeta"><div class="cmi">⏱ ~15 menit</div><span class="badge bg">Gratis</span></div>
+  <div class="prose">
+
+    <h2>Apa itu Mimocode?</h2>
+    <p>Mimocode adalah AI coding assistant yang bisa langsung dipakai di browser — tidak perlu install apapun. Tersedia model gratis bawaan bernama <strong>Mimo Auto</strong>, cocok untuk belajar coding, debug kode, dan build project sederhana tanpa perlu bayar.</p>
+    <div class="grid2">
+      <div class="card"><div class="card-icon">⚡</div><div class="card-title">Cepat</div><div class="card-text">Response time lebih rendah dibanding model besar seperti Opus — cocok untuk iterasi cepat.</div></div>
+      <div class="card"><div class="card-icon">🆓</div><div class="card-title">Gratis</div><div class="card-text">Model Mimo Auto tidak perlu API key atau kartu kredit. Langsung pakai dari browser.</div></div>
+      <div class="card"><div class="card-icon">🌐</div><div class="card-title">Browser-based</div><div class="card-text">Tidak perlu install apapun. Buka browser, buka Mimocode, langsung bisa mulai coding.</div></div>
+      <div class="card"><div class="card-icon">📚</div><div class="card-title">Cocok Belajar</div><div class="card-text">Interface yang ramah pemula dengan penjelasan yang mudah dipahami.</div></div>
+    </div>
+
+    <h2>Buat Akun & Mulai</h2>
+    <div class="steps">
+      <div class="step"><div class="stn">1</div><div class="stb"><div class="stt">Buka mimocode.dev</div><div class="stx">Klik Sign Up atau Continue with Google.</div></div></div>
+      <div class="step"><div class="stn">2</div><div class="stb"><div class="stt">Pilih model Mimo Auto</div><div class="stx">Dari dropdown model di interface, pilih "Mimo Auto" untuk langsung mulai gratis.</div></div></div>
+      <div class="step"><div class="stn">3</div><div class="stb"><div class="stt">Buat project atau upload kode</div><div class="stx">Bisa mulai dari blank project atau paste kode yang ingin dianalisis/diperbaiki.</div></div></div>
+    </div>
+
+    <h2>Workflow Dasar</h2>
+    <div class="steps">
+      <div class="step"><div class="stn">1</div><div class="stb"><div class="stt">Describe apa yang ingin dibangun</div><div class="stx">"Buat REST API sederhana untuk todo list dengan endpoint GET, POST, PUT, DELETE." — Mimocode akan generate kode dasarnya.</div></div></div>
+      <div class="step"><div class="stn">2</div><div class="stb"><div class="stt">Review & iterasi</div><div class="stx">Minta modifikasi spesifik: "Tambah validasi input — title tidak boleh kosong, batas 100 karakter."</div></div></div>
+      <div class="step"><div class="stn">3</div><div class="stb"><div class="stt">Export ke Replit atau lokal</div><div class="stx">Copy kode ke editor pilihanmu, atau export langsung ke Replit untuk langsung bisa dijalankan.</div></div></div>
+    </div>
+
+    <div class="box info"><div class="bi">💡</div><div class="bb2"><div class="bt">Kapan pakai Mimocode vs OpenCode?</div><div class="bx">Mimocode: project baru dari awal, mau hasil cepat tanpa setup terminal. OpenCode: sudah punya project yang sedang berjalan, perlu AI yang baca file lokal secara langsung.</div></div></div>
+
+    <h2>📺 Video Tutorial</h2>
+    <ul>
+      <li><a href="https://www.youtube.com/results?search_query=Mimocode+tutorial+cara+pakai" target="_blank">🎬 "Mimocode tutorial cara pakai"</a></li>
+      <li><a href="https://www.youtube.com/results?search_query=Mimocode+AI+coding+assistant+review" target="_blank">🎬 "Mimocode AI coding assistant review"</a></li>
+    </ul>
+
+  </div>
+  <div class="chnav">
+    <button class="chnbtn" onclick="go('o4')"><div class="chnbtn-arrow">←</div><div><div class="chnl">Sebelumnya</div><div class="chnt">OpenCode — Tutorial Build</div></div></button>
+    <button class="chnbtn next" onclick="go('m2')"><div><div class="chnl">Berikutnya</div><div class="chnt">Mimocode — Tutorial Build</div></div><div class="chnbtn-arrow">→</div></button>
+  </div>
+</section>
+
+<!-- ==================== M2: MIMOCODE TUTORIAL ==================== -->
+<section class="ch" id="m2">
+  <div class="eyebrow"><div class="ed"></div>Mimocode · Bab 19</div>
+  <h1 class="chtitle">Tutorial: Build Todo REST API</h1>
+  <p class="chsub">Dari nol sampai API berjalan di Replit — step by step menggunakan Mimocode + Mimo Auto gratis.</p>
+  <div class="chmeta"><div class="cmi">⏱ ~30 menit</div><div class="cmi">📦 Node.js · Express</div><span class="badge bg">Gratis</span></div>
+  <div class="prose">
+
+    <div class="box info"><div class="bi">🎯</div><div class="bb2"><div class="bt">Yang akan dibuat</div><div class="bx">REST API untuk aplikasi todo list: endpoint untuk list todos, tambah todo baru, update status, dan hapus. Dijalankan di Replit sehingga bisa diakses dari mana saja.</div></div></div>
+
+    <h2>Persiapan</h2>
+    <div class="steps">
+      <div class="step"><div class="stn">1</div><div class="stb"><div class="stt">Buka Mimocode & pilih Mimo Auto</div><div class="stx">Pastikan model yang dipilih adalah Mimo Auto agar gratis.</div></div></div>
+      <div class="step"><div class="stn">2</div><div class="stb"><div class="stt">Buat Repl baru</div><div class="stx">Buka replit.com → Create Repl → pilih template Node.js → beri nama <code>todo-api</code>.</div></div></div>
+    </div>
+
+    <h2>Step 1: Generate Kode API Dasar</h2>
+    <p>Di Mimocode, ketik:</p>
+    <pre><code>Buat REST API sederhana dengan Node.js + Express untuk todo list.
+Simpan data di memory (array), tidak perlu database.
+
+Endpoint yang dibutuhkan:
+GET    /todos          - ambil semua todo
+POST   /todos          - tambah todo baru (body: { title, done: false })
+PUT    /todos/:id      - update todo (body: { title?, done? })
+DELETE /todos/:id      - hapus todo
+
+Tambah middleware: cors, express.json()
+Port: 3000
+Sertakan contoh data awal (3 todo) untuk testing.</code></pre>
+
+    <h2>Step 2: Tambah Validasi</h2>
+    <pre><code>Tambahkan validasi input:
+- POST /todos: title wajib ada, tidak boleh string kosong,
+  maksimal 100 karakter
+- PUT /todos/:id: minimal satu field (title atau done) harus ada
+- Semua endpoint: kalau id tidak ditemukan, return 404 dengan
+  pesan error yang jelas
+- Response format konsisten: { success: boolean, data?, error? }</code></pre>
+
+    <h2>Step 3: Deploy ke Replit & Test</h2>
+    <div class="steps">
+      <div class="step"><div class="stn">1</div><div class="stb"><div class="stt">Copy kode ke Replit</div><div class="stx">Paste kode yang di-generate Mimocode ke file <code>index.js</code> di Replit. Install dependencies: <code>npm install express cors</code>.</div></div></div>
+      <div class="step"><div class="stn">2</div><div class="stb"><div class="stt">Klik Run</div><div class="stx">Replit menjalankan server. URL preview muncul di panel kanan.</div></div></div>
+      <div class="step"><div class="stn">3</div><div class="stb"><div class="stt">Test endpoint</div><div class="stx">Buka URL preview + <code>/todos</code> di browser — harus menampilkan array todo. Untuk test POST/PUT/DELETE, pakai Postman atau ekstensi browser REST Client.</div></div></div>
+    </div>
+
+    <h2>📺 Video Tutorial</h2>
+    <ul>
+      <li><a href="https://www.youtube.com/results?search_query=buat+REST+API+Node.js+Express+tutorial+Indonesia" target="_blank">🎬 "buat REST API Node.js Express tutorial Indonesia"</a></li>
+      <li><a href="https://www.youtube.com/results?search_query=deploy+Node.js+API+Replit+tutorial" target="_blank">🎬 "deploy Node.js API Replit tutorial"</a></li>
+    </ul>
+
+  </div>
+  <div class="chnav">
+    <button class="chnbtn" onclick="go('m1')"><div class="chnbtn-arrow">←</div><div><div class="chnl">Sebelumnya</div><div class="chnt">Mimocode — Setup & Workflow</div></div></button>
+    <button class="chnbtn next" onclick="go('tx1')"><div><div class="chnl">Berikutnya</div><div class="chnt">Claude Code via Termux</div></div><div class="chnbtn-arrow">→</div></button>
+  </div>
+</section>
+
+<!-- ==================== TX1: ANDROID TERMUX ==================== -->
+<section class="ch" id="tx1">
+  <div class="eyebrow"><div class="ed"></div>Android · Bab 20</div>
+  <h1 class="chtitle">Claude Code via Termux (Android)</h1>
+  <p class="chsub">Coding dengan AI dari HP atau tablet Android — gratis menggunakan Termux sebagai terminal Linux di genggaman.</p>
+  <div class="chmeta"><div class="cmi">⏱ ~30 menit</div><div class="cmi">📱 Android 7+</div><span class="badge bg">Gratis</span></div>
+  <div class="prose">
+
+    <div class="box info"><div class="bi">📱</div><div class="bb2"><div class="bt">Untuk siapa ini?</div><div class="bx">Kamu yang tidak punya laptop tapi punya HP Android dan ingin bisa coding dengan AI. Termux memberi akses terminal Linux lengkap di Android — bisa install Node.js, Python, Git, dan tools developer lainnya.</div></div></div>
+
+    <h2>Install Termux</h2>
+    <div class="steps">
+      <div class="step"><div class="stn">1</div><div class="stb"><div class="stt">Download dari F-Droid (bukan Play Store)</div><div class="stx">Buka <a href="https://f-droid.org" target="_blank">f-droid.org</a> di browser HP → cari "Termux" → download dan install. Versi Play Store sudah tidak diupdate dan tidak direkomendasikan.</div></div></div>
+      <div class="step"><div class="stn">2</div><div class="stb"><div class="stt">Izinkan install dari sumber tidak dikenal</div><div class="stx">Android akan meminta izin. Izinkan untuk browser yang digunakan download F-Droid.</div></div></div>
+      <div class="step"><div class="stn">3</div><div class="stb"><div class="stt">Buka Termux</div><div class="stx">Terminal Linux siap. Layar hitam dengan prompt <code>$</code> adalah tanda berhasil.</div></div></div>
+    </div>
+
+    <h2>Setup Awal Termux</h2>
+    <pre><code># Update package list
+pkg update && pkg upgrade
+
+# Install tools penting
+pkg install git nodejs python
+
+# Verifikasi
+node --version
+git --version
+python --version</code></pre>
+
+    <h2>Install OpenCode (Cara Termudah)</h2>
+    <p>OpenCode dengan Big Pickle adalah cara paling mudah coding dengan AI di Termux — gratis, tidak perlu API key:</p>
+    <pre><code># Install OpenCode
+npm install -g opencode-ai
+
+# Jalankan OpenCode
+opencode
+
+# Pilih Big Pickle dari model selector — langsung gratis!</code></pre>
+
+    <h2>Alternatif: Claude Code (Login)</h2>
+    <pre><code># Install Claude Code
+npm install -g @anthropic-ai/claude-code
+
+# Login dengan akun Claude (bukan API key)
+claude --login
+
+# Jalankan Claude Code
+claude</code></pre>
+
+    <h2>Tips Pakai Termux di HP</h2>
+    <ul>
+      <li><strong>Keyboard eksternal</strong> sangat disarankan — coding di on-screen keyboard sangat melelahkan</li>
+      <li><strong>Termux bisa background</strong> — kamu bisa switch app lain dan Termux tetap jalan</li>
+      <li><strong>Akses storage HP</strong>: jalankan <code>termux-setup-storage</code> untuk bisa akses folder di HP</li>
+      <li><strong>Layar lebih besar</strong>: tablet Android jauh lebih nyaman dari HP untuk coding</li>
+    </ul>
+
+    <div class="box tip"><div class="bi">✅</div><div class="bb2"><div class="bt">Produktif dari HP</div><div class="bx">Banyak developer pakai HP + keyboard Bluetooth + Termux sebagai setup coding portable. Dengan OpenCode + Big Pickle, kamu bisa coding AI tanpa biaya apapun dari mana saja.</div></div></div>
+
+    <h2>📺 Video Tutorial</h2>
+    <ul>
+      <li><a href="https://www.youtube.com/results?search_query=Termux+tutorial+setup+Android+coding" target="_blank">🎬 "Termux tutorial setup Android coding"</a></li>
+      <li><a href="https://www.youtube.com/results?search_query=coding+dari+HP+Android+Termux+Node.js" target="_blank">🎬 "coding dari HP Android Termux Node.js"</a></li>
+      <li><a href="https://www.youtube.com/results?search_query=Claude+Code+Termux+Android+tutorial" target="_blank">🎬 "Claude Code Termux Android tutorial"</a></li>
+    </ul>
+
+  </div>
+  <div class="chnav">
+    <button class="chnbtn" onclick="go('m2')"><div class="chnbtn-arrow">←</div><div><div class="chnl">Sebelumnya</div><div class="chnt">Mimocode — Tutorial Build</div></div></button>
+    <button class="chnbtn next" onclick="go('cc1')"><div><div class="chnl">Berikutnya</div><div class="chnt">Install Claude Code CLI</div></div><div class="chnbtn-arrow">→</div></button>
+  </div>
+</section>
+
+<!-- ==================== CC1: CLAUDE CODE INSTALL ==================== -->
+<section class="ch" id="cc1">
+  <div class="eyebrow"><div class="ed"></div>Claude Code CLI · Bab 21</div>
+  <h1 class="chtitle">Install Claude Code dari Awal</h1>
+  <p class="chsub">Panduan lengkap instalasi Claude Code di terminal — mulai dari nol: bash, Homebrew, Git, Node.js, sampai Claude Code siap pakai.</p>
+  <div class="chmeta">
+    <div class="cmi">⏱ ~30 menit</div>
+    <div class="cmi">💻 Mac · Linux · Windows</div>
+    <span class="badge br">Pemula</span>
+  </div>
+  <div class="prose">
+
+    <h2>Apa yang akan diinstall</h2>
+    <p>Claude Code adalah AI coding assistant dari Anthropic yang berjalan langsung di terminal. Sebelum bisa pakai, kita perlu menyiapkan lingkungan terminal yang lengkap:</p>
+    <div class="tbl-wrap">
+      <table class="tbl">
+        <thead><tr><th>Tool</th><th>Kegunaan</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Bash / Zsh</strong></td><td>Shell terminal — sudah ada di Mac/Linux, tinggal cek</td></tr>
+          <tr><td><strong>Homebrew</strong></td><td>Package manager untuk Mac (opsional tapi memudahkan)</td></tr>
+          <tr><td><strong>Git</strong></td><td>Version control — dibutuhkan Claude Code</td></tr>
+          <tr><td><strong>Node.js</strong></td><td>Runtime JavaScript — Claude Code berjalan di atas Node</td></tr>
+          <tr><td><strong>Claude Code</strong></td><td>AI coding assistant — tujuan akhir</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>🪟 Untuk Windows (CMD / PowerShell)</h2>
+    <p>Panduan khusus Windows — semua langkah dari awal sampai Claude Code siap dipakai di Command Prompt atau PowerShell.</p>
+
+    <h3>1. Install Git untuk Windows</h3>
+    <div class="steps">
+      <div class="step"><div class="stn">1</div><div class="stb"><div class="stt">Download Git Installer</div><div class="stx">Buka <a href="https://git-scm.com/download/win" target="_blank">git-scm.com/download/win</a> → download otomatis untuk Windows 64-bit.</div></div></div>
+      <div class="step"><div class="stn">2</div><div class="stb"><div class="stt">Jalankan installer</div><div class="stx">Klik Next terus kecuali beberapa opsi penting:<br><br>✅ Pilih <strong>"Git from the command line and also from 3rd-party software"</strong><br>✅ Pilih <strong>"Use bundled OpenSSH"</strong><br>✅ Pilih <strong>"Use Visual Studio Code as default editor"</strong> (kalau ada)<br>✅ Pilih <strong>"Git Credential Manager"</strong> (default)</div></div></div>
+      <div class="step"><div class="stn">3</div><div class="stb"><div class="stt">Verifikasi di CMD</div><div class="stx">Buka Command Prompt (ketik <code>cmd</code> di Start Menu):<pre><code>git --version
+# Output: git version 2.x.x</code></pre></div></div></div>
+      <div class="step"><div class="stn">4</div><div class="stb"><div class="stt">Set identitas Git</div><div class="stx"><pre><code>git config --global user.name "Nama Kamu"
+git config --global user.email "email@kamu.com"</code></pre></div></div></div>
+    </div>
+
+    <h3>2. Install Node.js di Windows</h3>
+    <div class="steps">
+      <div class="step"><div class="stn">1</div><div class="stb"><div class="stt">Download Node.js LTS</div><div class="stx">Buka <a href="https://nodejs.org" target="_blank">nodejs.org</a> → klik tombol hijau <strong>LTS</strong> (bukan Current). File <code>.msi</code> akan terdownload.</div></div></div>
+      <div class="step"><div class="stn">2</div><div class="stb"><div class="stt">Jalankan installer .msi</div><div class="stx">Klik Next terus — pastikan opsi <strong>"Add to PATH"</strong> sudah tercentang (defaultnya sudah). Finish.</div></div></div>
+      <div class="step"><div class="stn">3</div><div class="stb"><div class="stt">Verifikasi</div><div class="stx">Buka CMD baru dan ketik:<pre><code>node --version
+# Output: v20.x.x atau v22.x.x
+npm --version
+# Output: 10.x.x</code></pre></div></div></div>
+    </div>
+
+    <h3>3. Install Claude Code</h3>
+    <pre><code>npm install -g @anthropic-ai/claude-code</code></pre>
+    <p>Tunggu sampai selesai. Verifikasi:</p>
+    <pre><code>claude --version</code></pre>
+
+    <h3>4. Login ke Claude</h3>
+    <p>Claude Code menggunakan autentikasi login, bukan API key. Setelah install, login dengan akun Claude-mu:</p>
+    <div class="steps">
+      <div class="step"><div class="stn">1</div><div class="stb"><div class="stt">Jalankan perintah login</div><div class="stx"><pre><code>claude --login</code></pre>Browser akan terbuka ke halaman login Anthropic.</div></div></div>
+      <div class="step"><div class="stn">2</div><div class="stb"><div class="stt">Login dengan akun Claude</div><div class="stx">Masuk dengan akun yang sudah dibuat di Bab 1. Setelah berhasil, browser akan menampilkan "Authentication successful!".</div></div></div>
+      <div class="step"><div class="stn">3</div><div class="stb"><div class="stt">Kembali ke terminal</div><div class="stx">Terminal akan otomatis mendeteksi login berhasil. Claude Code siap dipakai! Tidak perlu API key atau environment variable.</div></div></div>
+    </div>
+
+    <h3>5. Jalankan Claude Code</h3>
+    <pre><code>mkdir project-pertama
+cd project-pertama
+claude</code></pre>
+    <p>Saat pertama jalan, Claude Code akan minta izin terminal. Ketik <code>y</code> lalu Enter untuk setuju. Mulai coding!</p>
+
+    <div class="box info"><div class="bi">💡</div><div class="bb2"><div class="bt">Pakai WSL sebagai alternatif</div><div class="bx">Kalau mau lingkungan yang sama persis dengan Mac/Linux, install <strong>WSL (Windows Subsystem for Linux)</strong>. Buka PowerShell sebagai Admin, ketik <code>wsl --install</code> → restart → buka Ubuntu dari Start Menu. Setelah itu ikuti panduan Linux di atas.</div></div></div>
+
+    <h2>Untuk Mac & Linux</h2>
+    <p>Ikuti langkah-langkah di bawah ini.</p>
+
+    <h2>1. Cek Shell Terminal</h2>
+    <p>Buka <strong>Terminal</strong> (Mac) atau <strong>terminal emulator</strong> (Linux). Cek shell yang kamu pakai:</p>
+    <pre><code>echo $SHELL
+# Output biasanya: /bin/zsh (Mac modern) atau /bin/bash</code></pre>
+    <p>Mac modern pakai Zsh secara default. Linux umumnya pakai Bash. Dua-duanya sama-sama bisa untuk panduan ini.</p>
+
+    <h2>2. Install Xcode Command Line Tools (Mac)</h2>
+    <p>Mac butuh <strong>Xcode Command Line Tools</strong> — ini menyediakan compiler dan tools dasar yang dibutuhkan Git dan package manager:</p>
+    <pre><code>xcode-select --install</code></pre>
+    <p>Muncul pop-up → klik "Install" → tunggu selesai (5-15 menit tergantung internet). Kalau sudah terinstall sebelumnya akan muncul pesan "error: command line tools are already installed".</p>
+    <div class="box tip"><div class="bi">✅</div><div class="bb2"><div class="bt">Cek hasil install</div><div class="bx">Jalankan <code>xcode-select -p</code> — kalau output-nya <code>/Library/Developer/CommandLineTools</code> berarti berhasil.</div></div></div>
+
+    <h2>3. Install Homebrew (Mac — opsional)</h2>
+    <p>Homebrew memudahkan install Git dan tools lainnya. Bisa skip kalau sudah punya Git dari Xcode CLI tools.</p>
+    <pre><code>/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"</code></pre>
+    <p>Ikuti petunjuk di terminal. Setelah selesai, tambahkan Homebrew ke PATH:</p>
+    <pre><code># Untuk Mac dengan chip Apple (M1/M2/M3):
+echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> ~/.zshrc
+eval "$(/opt/homebrew/bin/brew shellenv)"
+
+# Untuk Mac Intel:
+echo 'eval "$(/usr/local/bin/brew shellenv)"' >> ~/.zshrc
+eval "$(/usr/local/bin/brew shellenv)"</code></pre>
+    <p>Verifikasi: <code>brew --version</code></p>
+    <div class="box info"><div class="bi">💡</div><div class="bb2"><div class="bt">Untuk Linux</div><div class="bx">Pakai apt (Ubuntu/Debian): <code>sudo apt update && sudo apt install git nodejs npm</code> — langsung semua bisa diinstall sekaligus. Atau pakai package manager sesuai distro.</div></div></div>
+
+    <h2>4. Install Git</h2>
+    <p>Cek apakah Git sudah ada:</p>
+    <pre><code>git --version
+# Output: git version 2.x.x</code></pre>
+    <p>Kalau belum ada, install:</p>
+    <pre><code># Mac (via Homebrew)
+brew install git
+
+# Ubuntu/Debian
+sudo apt install git
+
+# Fedora
+sudo dnf install git</code></pre>
+    <p>Konfigurasi identitas Git (wajib — ini akan terhubung ke Claude Code):</p>
+    <pre><code>git config --global user.name "Nama Kamu"
+git config --global user.email "email@kamu.com"</code></pre>
+    <div class="box warn"><div class="bi">⚠️</div><div class="bb2"><div class="bt">Email harus sama dengan akun GitHub</div><div class="bx">Gunakan email yang terdaftar di GitHub agar commit-mu tertaut ke akun dengan benar. Cek di github.com/settings/emails.</div></div></div>
+
+    <h2>5. Install Node.js</h2>
+    <p>Claude Code butuh Node.js versi 18 atau lebih baru. Cara termudah: pakai <strong>nvm</strong> (Node Version Manager):</p>
+    <pre><code># Install nvm
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash</code></pre>
+    <p>Setelah selesai, restart terminal atau jalankan:</p>
+    <pre><code>source ~/.zshrc
+# atau: source ~/.bashrc
+
+# Cek nvm
+nvm --version</code></pre>
+    <p>Install Node.js LTS terbaru:</p>
+    <pre><code>nvm install --lts
+nvm use --lts
+
+# Verifikasi
+node --version
+# Output: v22.x.x atau v20.x.x (LTS)
+npm --version
+# Output: 10.x.x</code></pre>
+    <div class="box tip"><div class="bi">✅</div><div class="bb2"><div class="bt">Alternatif tanpa nvm</div><div class="bx">Download langsung dari <a href="https://nodejs.org" target="_blank">nodejs.org</a> → pilih LTS → installer. Atau via Homebrew: <code>brew install node</code>.</div></div></div>
+
+    <h2>6. Install Claude Code</h2>
+    <p>Setelah Node.js dan Git siap, install Claude Code secara global via npm:</p>
+    <pre><code>npm install -g @anthropic-ai/claude-code</code></pre>
+    <p>Tunggu sampai selesai. Verifikasi instalasi:</p>
+    <pre><code>claude --version
+# Output: claude-code x.x.x</code></pre>
+
+    <h2>7. Login ke Claude</h2>
+    <p>Claude Code menggunakan autentikasi login, bukan API key. Setelah install, login dengan akun Claude:</p>
+    <div class="steps">
+      <div class="step"><div class="stn">1</div><div class="stb"><div class="stt">Jalankan perintah login</div><div class="stx"><pre><code>claude --login</code></pre>Browser akan terbuka ke halaman login Anthropic.</div></div></div>
+      <div class="step"><div class="stn">2</div><div class="stb"><div class="stt">Login dengan akun Claude</div><div class="stx">Masuk dengan akun yang sudah dibuat di Bab 1.</div></div></div>
+      <div class="step"><div class="stn">3</div><div class="stb"><div class="stt">Selesai!</div><div class="stx">Setelah login berhasil, terminal akan mendeteksinya. Claude Code siap dipakai tanpa perlu environment variable.</div></div></div>
+    </div>
+
+    <h2>8. Jalankan Claude Code Pertama Kali</h2>
+    <p>Buat folder project baru, masuk ke folder itu, lalu jalankan Claude Code:</p>
+    <pre><code>mkdir project-pertama
+cd project-pertama
+claude</code></pre>
+    <p>Saat pertama kali dijalankan, Claude Code akan meminta konfirmasi beberapa izin. Baca dan setujui (type <code>y</code> lalu Enter). Setelah itu, terminal berubah menjadi mode chat — kamu bisa mulai coding dengan AI.</p>
+    <div class="box info"><div class="bi">💡</div><div class="bb2"><div class="bt">Koneksi internet diperlukan</div><div class="bx">Claude Code mengirim prompt ke server Anthropic untuk diproses. Pastikan terhubung internet setiap kali menggunakannya.</div></div></div>
+
+    <h2>Command Penting Claude Code</h2>
+    <div class="tbl-wrap">
+      <table class="tbl">
+        <thead><tr><th>Command</th><th>Fungsi</th></tr></thead>
+        <tbody>
+          <tr><td><code>/help</code></td><td>Daftar semua perintah yang tersedia</td></tr>
+          <tr><td><code>/clear</code></td><td>Bersihkan riwayat chat di sesi ini</td></tr>
+          <tr><td><code>Ctrl+C</code></td><td>Batalkan respons AI yang sedang berjalan</td></tr>
+          <tr><td><code>/exit</code> atau <code>Ctrl+D</code></td><td>Keluar dari Claude Code</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Ringkasan Instalasi</h2>
+    <p>Kalau semua tools sudah ada di komputer, instalasi Claude Code cukup 3 langkah:</p>
+    <pre><code>node --version                           # cek Node.js
+npm install -g @anthropic-ai/claude-code  # install
+claude --login                            # login dengan akun Claude
+claude                                    # jalan!</code></pre>
+
+    <h2>📺 Video Tutorial</h2>
+    <ul>
+      <li><a href="https://www.youtube.com/results?search_query=install+Node.js+di+Mac+pakai+nvm+tutorial" target="_blank">🎬 "install Node.js di Mac pakai nvm tutorial"</a></li>
+      <li><a href="https://www.youtube.com/results?search_query=cara+install+Git+di+Mac+Windows+Linux" target="_blank">🎬 "cara install Git di Mac Windows Linux"</a></li>
+      <li><a href="https://www.youtube.com/results?search_query=install+Claude+Code+CLI+tutorial+terminal" target="_blank">🎬 "install Claude Code CLI tutorial terminal"</a></li>
+      <li><a href="https://www.youtube.com/results?search_query=install+Node.js+di+Windows+CMD+pemula" target="_blank">🎬 "install Node.js di Windows CMD pemula"</a></li>
+      <li><a href="https://www.youtube.com/results?search_query=install+Git+di+Windows+CMD+git+bash" target="_blank">🎬 "install Git di Windows CMD git bash"</a></li>
+      <li><a href="https://www.youtube.com/results?search_query=Claude+Code+cara+pakai+untuk+pemula+Indonesia" target="_blank">🎬 "Claude Code cara pakai untuk pemula Indonesia"</a></li>
+    </ul>
+
+  </div>
+  <div class="chnav">
+    <button class="chnbtn" onclick="go('tx1')"><div class="chnbtn-arrow">←</div><div><div class="chnl">Sebelumnya</div><div class="chnt">Claude Code via Termux</div></div></button>
+    <button class="chnbtn next" onclick="go('tp1')"><div><div class="chnl">Berikutnya</div><div class="chnt">Pakai Template Build</div></div><div class="chnbtn-arrow">→</div></button>
+  </div>
+</section>
+
+<!-- ==================== TP1: TEMPLATE BUILD ==================== -->
+<section class="ch" id="tp1">
+  <div class="eyebrow"><div class="ed"></div>Final Project · Bab 22</div>
+  <h1 class="chtitle">Pakai Template Build Sesi Eksplorasi</h1>
+  <p class="chsub">Panduan menggunakan template final project — isi konteks, minta AI build, edit sesuai kebutuhan, dan kumpulkan ke TA.</p>
+  <div class="chmeta">
+    <div class="cmi">⏱ ~60 menit</div>
+    <div class="cmi">🤖 Claude · ChatGPT · Gemini</div>
+    <span class="badge br">Pemula</span>
+  </div>
+  <div class="prose">
+
+    <h2>Apa itu Template Build?</h2>
+    <p>Template <strong>Build Sesi Eksplorasi</strong> adalah panduan step-by-step untuk membangun tools berbasis web menggunakan AI. Template ini terdiri dari 3 bagian:</p>
+    <div class="grid2">
+      <div class="card"><div class="card-icon">📝</div><div class="card-title">Bagian 1 — Konteks Proyek</div><div class="card-text">Isi data diri, pain yang dipilih, target pengguna, core feature, input & output tools.</div></div>
+      <div class="card"><div class="card-icon">⚙️</div><div class="card-title">Bagian 2 — System Prompt</div><div class="card-text">Instruksi permanen untuk AI — paste di awal sesi agar hasilnya konsisten.</div></div>
+      <div class="card"><div class="card-icon">🚀</div><div class="card-title">Bagian 3 — Build Prompts</div><div class="card-text">3 prompt berurutan: build, perbaiki, deploy. Jalanin satu per satu.</div></div>
+    </div>
+
+    <h2>Step 1: Download / Copy Template</h2>
+    <p>Template tersedia di folder MBCL Cohort 1 dengan nama file <code>MBCL 1 Template Build Sesi Eksplorasi.md</code>. Buka file itu di editor teks atau langsung di browser.</p>
+    <div class="box tip"><div class="bi">✅</div><div class="bb2"><div class="bt">Pakai AI untuk bantu isi</div><div class="bx">Upload file .md ini ke AI (Claude / ChatGPT / Gemini) dan minta: <em>"Bantu aku mengisi template ini sesuai pekerjaanku"</em>. AI akan mewawancaraimu dan mengisi bagian yang kosong.</div></div></div>
+
+    <h2>Step 2: Isi Bagian 1 — Konteks Proyek</h2>
+    <p>Bagian ini yang paling penting. Semakin spesifik, semakin akurat hasil build-nya. Ini yang perlu diisi:</p>
+    <div class="tbl-wrap">
+      <table class="tbl">
+        <thead><tr><th>Field</th><th>Tips</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Nama & Pekerjaan</strong></td><td>Nama asli dan jabatan kamu saat ini</td></tr>
+          <tr><td><strong>Pain yang dipilih</strong></td><td>1 kalimat — masalah nyata di pekerjaanmu. Contoh: "sulit melacak approval dokumen yang tersebar di email"</td></tr>
+          <tr><td><strong>Target pengguna</strong></td><td>Kamu sendiri? Tim? Atasan? Semakin jelas semakin baik</td></tr>
+          <tr><td><strong>Solusi yang dipilih</strong></td><td>Nama tools dan deskripsi singkat — lihat dari Slide 3 atau Assignment</td></tr>
+          <tr><td><strong>Core feature (1 saja)</strong></td><td>Pilih SATU fitur paling inti. Satu fitur yang dilakukan dengan baik > 10 fitur setengah jadi</td></tr>
+          <tr><td><strong>Input & Output</strong></td><td>Apa yang dimasukkan user? Apa yang tools hasilkan?</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Step 3: Upload ke AI</h2>
+    <p>Pilih AI yang akan kamu pakai:</p>
+    <div class="tbl-wrap">
+      <table class="tbl">
+        <thead><tr><th>AI</th><th>Cara pakai untuk template ini</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Claude (claude.ai)</strong></td><td>Upload file .md → paste Bagian 2 sebagai Project Instructions buat Project baru → jalankan Prompt 1, 2, 3 berurutan</td></tr>
+          <tr><td><strong>ChatGPT</strong></td><td>Upload file → minta isi Bagian 1 → setelah terisi, paste Bagian 2 + 3 di chat yang sama</td></tr>
+          <tr><td><strong>Gemini</strong></td><td>Upload file → minta bantuan isi template → lanjut build dengan prompt di Bagian 3</td></tr>
+          <tr><td><strong>OpenCode Desktop</strong></td><td>Buka folder project → paste Bagian 2 di chat sebagai instruksi awal → jalankan Prompt 1</td></tr>
+          <tr><td><strong>Mimocode</strong></td><td>Upload file → minta isi template → jalankan build prompt</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Step 4: Jalankan Build Prompts</h2>
+    <p>Setelah AI memahami konteks, jalankan 3 prompt berikut secara berurutan:</p>
+    <div class="steps">
+      <div class="step"><div class="stn">1</div><div class="stb"><div class="stt">Prompt 1 — Mulai Build</div><div class="stx">Ada di Bagian 3 template. Prompt ini menyuruh AI membuat tools dalam 1 file HTML. Langsung jalankan setelah konteks terisi.</div></div></div>
+      <div class="step"><div class="stn">2</div><div class="stb"><div class="stt">Prompt 2 — Cek & Perbaiki</div><div class="stx">Coba tools-nya dulu. Catat apa yang kurang atau error. Lalu jalankan Prompt 2 dengan deskripsi masalahmu.</div></div></div>
+      <div class="step"><div class="stn">3</div><div class="stb"><div class="stt">Prompt 3 — Siap Deploy</div><div class="stx">Kalau tools sudah berfungsi dengan baik, jalankan Prompt 3. AI akan deploy ke Vercel dan kasih URL publik.</div></div></div>
+    </div>
+    <div class="box info"><div class="bi">💡</div><div class="bb2"><div class="bt">Satu chat, satu project</div><div class="bx">Jangan campur template ini dengan percakapan lain di chat yang sama. Mulai chat baru khusus untuk project final ini. Kalau bisa, buat Project khusus di Claude.ai.</div></div></div>
+
+    <h2>Step 5: Edit untuk Kebutuhan Pribadi</h2>
+    <p>Setelah AI menghasilkan tools, kamu bisa minta perubahan sesuai selera:</p>
+    <ul>
+      <li><strong>Ganti warna</strong> — "Ubah warna tema jadi biru navy dan emas"</li>
+      <li><strong>Tambah fitur kecil</strong> — "Tambah tombol reset di samping tombol submit"</li>
+      <li><strong>Perbaiki teks</strong> — "Ganti judul jadi [judul tools kamu]"</li>
+      <li><strong>Tambahkan logo</strong> — "Tambah logo di header, ukuran 40x40px, dari URL ini: ..."</li>
+      <li><strong>Ganti font</strong> — "Pakai font Poppins dari Google Fonts"</li>
+    </ul>
+    <div class="box warn"><div class="bi">⚠️</div><div class="bb2"><div class="bt">Jangan edit kode langsung kalau tidak yakin</div><div class="bx">Minta AI yang edit. Ceritakan apa yang ingin diubah dalam bahasa sehari-hari. AI akan mengubah kodenya. Baru kalau sudah puas, simpan finalnya.</div></div></div>
+
+    <h2>Step 6: Simpan & Kumpulkan ke TA</h2>
+    <p>Yang perlu dikumpulkan ke dosen TA / facilitator:</p>
+    <div class="tbl-wrap">
+      <table class="tbl">
+        <thead><tr><th>Yang disetor</th><th>Cara dapat</th></tr></thead>
+        <tbody>
+          <tr><td><strong>File template yang sudah diisi</strong></td><td>File .md yang sudah terisi Bagian 1 — nama, pain, solusi, dll</td></tr>
+          <tr><td><strong>File HTML tools</strong></td><td>Hasil build dari AI — 1 file .html yang bisa dibuka di browser</td></tr>
+          <tr><td><strong>URL deploy (opsional)</strong></td><td>Kalau sudah di-deploy ke Vercel atau Replit, kumpulkan linknya</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>📺 Video Tutorial</h2>
+    <ul>
+      <li><a href="https://www.youtube.com/results?search_query=cara+pakai+Claude+untuk+build+web+tool+sederhana" target="_blank">🎬 "cara pakai Claude untuk build web tool sederhana"</a></li>
+      <li><a href="https://www.youtube.com/results?search_query=ChatGPT+build+HTML+tools+tanpa+coding" target="_blank">🎬 "ChatGPT build HTML tools tanpa coding"</a></li>
+      <li><a href="https://www.youtube.com/results?search_query=Gemini+AI+buat+website+HTML+prompt" target="_blank">🎬 "Gemini AI buat website HTML prompt"</a></li>
+    </ul>
+
+  </div>
+  <div class="chnav">
+    <button class="chnbtn" onclick="go('cc1')"><div class="chnbtn-arrow">←</div><div><div class="chnl">Sebelumnya</div><div class="chnt">Install Claude Code CLI</div></div></button>
+    <button class="chnbtn next" onclick="go('id1')"><div><div class="chnl">Berikutnya</div><div class="chnt">Install VS Code & Python</div></div><div class="chnbtn-arrow">→</div></button>
+  </div>
+</section>
+
+<!-- ==================== ID1: INSTALL TOOLS DASAR ==================== -->
+<section class="ch" id="id1">
+  <div class="eyebrow"><div class="ed"></div>Tools Dasar · Bab 23</div>
+  <h1 class="chtitle">Install VS Code, Python, Git & Node.js</h1>
+  <p class="chsub">Panduan lengkap instalasi tools yang dibutuhkan untuk coding — VS Code, Python, Git, dan Node.js di Mac, Windows, dan Linux.</p>
+  <div class="chmeta">
+    <div class="cmi">⏱ ~45 menit</div>
+    <div class="cmi">💻 Mac · Windows · Linux</div>
+    <span class="badge br">Pemula</span>
+  </div>
+  <div class="prose">
+
+    <h2>Sekilas Tools</h2>
+    <div class="tbl-wrap">
+      <table class="tbl">
+        <thead><tr><th>Tool</th><th>Fungsi</th><th>Butuh untuk</th></tr></thead>
+        <tbody>
+          <tr><td><strong>VS Code</strong></td><td>Code editor — tempat menulis dan mengedit kode</td><td>Semua project coding</td></tr>
+          <tr><td><strong>Python</strong></td><td>Bahasa pemrograman — untuk backend, data, AI/ML</td><td>Project Python, otomasi, data analysis</td></tr>
+          <tr><td><strong>Git</strong></td><td>Version control — melacak perubahan kode</td><td>GitHub, kolaborasi, deploy ke Vercel</td></tr>
+          <tr><td><strong>Node.js</strong></td><td>Runtime JavaScript — menjalankan JS di luar browser</td><td>Claude Code, npm, project web</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="box info"><div class="bi">💡</div><div class="bb2"><div class="bt">VS Code bisa dipakai untuk semua bahasa</div><div class="bx">VS Code mendukung HTML, CSS, JavaScript, Python, TypeScript, dan ratusan bahasa lain via extension. Cukup install satu editor untuk semua kebutuhan.</div></div></div>
+
+    <h2>🪟 Install di Windows</h2>
+
+    <h3>1. Install VS Code</h3>
+    <div class="steps">
+      <div class="step"><div class="stn">1</div><div class="stb"><div class="stt">Download installer</div><div class="stx">Buka <a href="https://code.visualstudio.com" target="_blank">code.visualstudio.com</a> → klik tombol hijau <strong>Download for Windows</strong>. File <code>.exe</code> sekitar 100MB.</div></div></div>
+      <div class="step"><div class="stn">2</div><div class="stb"><div class="stt">Jalankan installer</div><div class="stx">Centang <strong>"Add to PATH"</strong> dan <strong>"Add 'Open with Code' action"</strong> — ini penting biar bisa buka VS Code dari terminal.</div></div></div>
+      <div class="step"><div class="stn">3</div><div class="stb"><div class="stt">Selesai</div><div class="stx">Buka VS Code dari Start Menu. Cek versi di terminal: <code>code --version</code></div></div></div>
+    </div>
+
+    <h3>2. Install Python</h3>
+    <div class="steps">
+      <div class="step"><div class="stn">1</div><div class="stb"><div class="stt">Download Python</div><div class="stx">Buka <a href="https://python.org" target="_blank">python.org</a> → Downloads → tombol kuning <strong>Download Python 3.x.x</strong>.</div></div></div>
+      <div class="step"><div class="stn">2</div><div class="stb"><div class="stt">Jalankan installer</div><div class="stx">⚠️ <strong>PENTING: centang "Add Python to PATH"</strong> di bagian bawah installer sebelum klik Install.</div></div></div>
+      <div class="step"><div class="stn">3</div><div class="stb"><div class="stt">Verifikasi</div><div class="stx">Buka CMD baru:<pre><code>python --version
+pip --version</code></pre></div></div></div>
+    </div>
+
+    <h3>3. Install Git & Node.js</h3>
+    <p>Panduan lengkap Git dan Node.js untuk Windows sudah ada di <strong>Bab 21 — Install Claude Code</strong> bagian Windows. Langkah-langkahnya:</p>
+    <ul>
+      <li><strong>Git</strong>: download dari git-scm.com, jalankan installer, pilih opsi "Git from the command line"</li>
+      <li><strong>Node.js</strong>: download dari nodejs.org (LTS), jalankan .msi, pastikan "Add to PATH" tercentang</li>
+    </ul>
+    <p>Detail step-by-step ada di <a href="#" onclick="go('cc1'); return false;">Bab 21 → bagian Windows</a>.</p>
+
+    <hr>
+
+    <h2>🍏 Install di Mac</h2>
+
+    <h3>1. Install VS Code</h3>
+    <div class="steps">
+      <div class="step"><div class="stn">1</div><div class="stb"><div class="stt">Download</div><div class="stx">Buka <a href="https://code.visualstudio.com" target="_blank">code.visualstudio.com</a> → klik <strong>Download for Mac</strong>. File <code>.zip</code> didownload.</div></div></div>
+      <div class="step"><div class="stn">2</div><div class="stb"><div class="stt">Extract & drag ke Applications</div><div class="stx">Buka file <code>.zip</code> di Downloads → drag <strong>Visual Studio Code.app</strong> ke folder Applications.</div></div></div>
+      <div class="step"><div class="stn">3</div><div class="stb"><div class="stt">Buka & install PATH</div><div class="stx">Buka VS Code → buka Command Palette (<code>Cmd+Shift+P</code>) → ketik <code>shell command</code> → pilih <strong>"Install 'code' command in PATH"</strong>. Ini biisa buka VS Code dari terminal.</div></div></div>
+    </div>
+
+    <h3>2. Install Python</h3>
+    <p>Mac sudah punya Python bawaan versi lama. Install versi terbaru:</p>
+    <div class="steps">
+      <div class="step"><div class="stn">1</div><div class="stb"><div class="stt">Install via Homebrew (recommended)</div><div class="stx"><pre><code>brew install python</code></pre></div></div></div>
+      <div class="step"><div class="stn">2</div><div class="stb"><div class="stt">Atau download installer</div><div class="stx">Buka <a href="https://python.org" target="_blank">python.org</a> → Downloads → Mac → download <code>.pkg</code> → jalankan dan ikuti petunjuk.</div></div></div>
+      <div class="step"><div class="stn">3</div><div class="stb"><div class="stt">Verifikasi</div><div class="stx"><pre><code>python3 --version
+pip3 --version</code></pre></div></div></div>
+    </div>
+
+    <h3>3. Install Git & Node.js</h3>
+    <p>Panduan lengkap untuk Mac sudah ada di <strong>Bab 21</strong>:</p>
+    <ul>
+      <li><strong>Xcode CLI Tools</strong>: <code>xcode-select --install</code> (dibutuhkan Git dan compiler)</li>
+      <li><strong>Git</strong>: <code>brew install git</code> atau dari Xcode CLI tools</li>
+      <li><strong>Node.js</strong>: via nvm atau download dari nodejs.org</li>
+    </ul>
+    <p>Detail ada di <a href="#" onclick="go('cc1'); return false;">Bab 21 → bagian Mac & Linux</a>.</p>
+
+    <hr>
+
+    <h2>🐧 Install di Linux (Ubuntu/Debian)</h2>
+
+    <h3>1. Install VS Code</h3>
+    <pre><code># Download & install .deb package
+wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > packages.microsoft.gpg
+sudo install -o root -g root -m 644 packages.microsoft.gpg /etc/apt/trusted.gpg.d/
+sudo sh -c 'echo "deb [arch=amd64] https://packages.microsoft.com/repos/code stable main" > /etc/apt/sources.list.d/vscode.list'
+sudo apt update && sudo apt install code</code></pre>
+    <p>Atau download langsung dari <a href="https://code.visualstudio.com/download" target="_blank">code.visualstudio.com/download</a> → pilih <code>.deb</code> → klik dua kali untuk install.</p>
+
+    <h3>2. Install Python</h3>
+    <pre><code>sudo apt update
+sudo apt install python3 python3-pip
+
+# Verifikasi
+python3 --version
+pip3 --version</code></pre>
+    <p>Python biasanya sudah ada di Ubuntu. Cek dulu: <code>python3 --version</code>. Kalau sudah ≥ 3.10, tidak perlu install ulang.</p>
+
+    <h3>3. Install Git & Node.js</h3>
+    <p>Panduan lengkap untuk Linux ada di <strong>Bab 21 — bagian Mac & Linux</strong>:</p>
+    <ul>
+      <li><strong>Git</strong>: <code>sudo apt install git</code></li>
+      <li><strong>Node.js</strong>: via nvm (disarankan) atau <code>sudo apt install nodejs npm</code></li>
+    </ul>
+
+    <hr>
+
+    <h2>VS Code Extension Penting</h2>
+    <p>Setelah VS Code terinstall, tambahkan extension ini biar coding lebih nyaman:</p>
+    <div class="tbl-wrap">
+      <table class="tbl">
+        <thead><tr><th>Extension</th><th>Kegunaan</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Python</strong> (Microsoft)</td><td>Syntax highlighting, IntelliSense, debugging untuk Python</td></tr>
+          <tr><td><strong>GitLens</strong></td><td>Lihat history Git langsung di editor — siapa mengubah baris apa dan kapan</td></tr>
+          <tr><td><strong>Prettier</strong></td><td>Format kode otomatis — tekan <code>Shift+Option+F</code> (Mac) atau <code>Shift+Alt+F</code> (Windows)</td></tr>
+          <tr><td><strong>Live Server</strong></td><td>Buka HTML langsung di browser dengan live reload setiap kali file disimpan</td></tr>
+          <tr><td><strong>Material Icon Theme</strong></td><td>Ikon file yang cantik di sidebar — bikin file tree lebih mudah dibaca</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Cara install: buka VS Code → klik ikon Extensions di sidebar kiri (atau <code>Ctrl+Shift+X</code>) → cari nama extension → klik Install.</p>
+
+    <h2>Cek Semua Tools</h2>
+    <p>Jalankan perintah ini untuk verifikasi semua tools sudah terinstall:</p>
+    <pre><code>code --version          # VS Code
+python3 --version      # Python
+pip3 --version         # Python package manager
+git --version          # Git
+node --version         # Node.js
+npm --version          # npm (bundled dengan Node.js)</code></pre>
+    <div class="box tip"><div class="bi">✅</div><div class="bb2"><div class="bt">Sudah siap!</div><div class="bx">Kalau semua perintah di atas mengembalikan versi (bukan error "command not found"), berarti semua tools sudah siap dipakai. Lanjut ke <strong>Bab 21</strong> untuk install Claude Code.</div></div></div>
+
+    <h2>📺 Video Tutorial</h2>
+    <ul>
+      <li><a href="https://www.youtube.com/results?search_query=cara+install+VS+Code+Windows+Mac+tutorial+pemula" target="_blank">🎬 "cara install VS Code Windows Mac tutorial pemula"</a></li>
+      <li><a href="https://www.youtube.com/results?search_query=cara+install+Python+di+Windows+Mac+Linux+pemula" target="_blank">🎬 "cara install Python di Windows Mac Linux pemula"</a></li>
+      <li><a href="https://www.youtube.com/results?search_query=Python+pertama+kali+belajar+dari+nol+Indonesia" target="_blank">🎬 "Python pertama kali belajar dari nol Indonesia"</a></li>
+      <li><a href="https://www.youtube.com/results?search_query=VS+Code+extension+wajib+untuk+pemula+coding" target="_blank">🎬 "VS Code extension wajib untuk pemula coding"</a></li>
+    </ul>
+
+  </div>
+  <div class="chnav">
+    <button class="chnbtn" onclick="go('tp1')"><div class="chnbtn-arrow">←</div><div><div class="chnl">Sebelumnya</div><div class="chnt">Pakai Template Build</div></div></button>
+    <div></div>
+  </div>
+</section>
+<script>
+const CHAPTERS = ['c1','c2','c3','c4','c5','c6','g1','g2','g3','v1','v2','r1','r2','o3','o1','o2','o4','m1','m2','tx1','cc1','tp1','id1'];
+
+// --- Chapter navigation ---
+function go(id) {
+  const current = document.querySelector('.ch.show');
+
+  document.querySelectorAll('.ch').forEach(el => el.classList.remove('show'));
+  const target = document.getElementById(id);
+  if (target) target.classList.add('show');
+
+  document.querySelectorAll('.si').forEach(el => el.classList.remove('active'));
+  const activeEl = document.querySelector(`.si[data-ch="${id}"]`);
+  if (activeEl) {
+    activeEl.classList.add('active');
+    activeEl.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+  }
+
+  const idx = CHAPTERS.indexOf(id);
+  const counter = document.getElementById('tpnum');
+  if (counter) counter.textContent = idx + 1;
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  closeSidebar();
+  localStorage.setItem('panduan-last', id);
+  return false;
+}
+
+// --- Sidebar toggle ---
+function toggleSidebar() {
+  const sb = document.getElementById('sb');
+  if (sb.classList.contains('open')) closeSidebar();
+  else {
+    sb.classList.add('open');
+    document.getElementById('overlay').classList.add('show');
+    document.body.style.overflow = 'hidden';
+  }
+}
+
+function closeSidebar() {
+  document.getElementById('sb').classList.remove('open');
+  document.getElementById('overlay').classList.remove('show');
+  document.body.style.overflow = '';
+}
+
+// --- Reading progress bar ---
+window.addEventListener('scroll', () => {
+  const pct = document.documentElement.scrollHeight - window.innerHeight > 0
+    ? (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100
+    : 0;
+  document.getElementById('progress-fill').style.width = pct + '%';
+}, { passive: true });
+
+// --- Keyboard navigation ---
+document.addEventListener('keydown', (e) => {
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+  const current = document.querySelector('.ch.show');
+  if (!current) return;
+  const idx = CHAPTERS.indexOf(current.id);
+  if (e.key === 'ArrowRight' && idx < CHAPTERS.length - 1) go(CHAPTERS[idx + 1]);
+  if (e.key === 'ArrowLeft' && idx > 0) go(CHAPTERS[idx - 1]);
+  if (e.key === 'Escape') closeSidebar();
+});
+
+// --- Swipe to close sidebar ---
+let touchStartX = 0;
+document.addEventListener('touchstart', (e) => { touchStartX = e.touches[0].clientX; }, { passive: true });
+document.addEventListener('touchend', (e) => {
+  if (e.changedTouches[0].clientX - touchStartX < -60 && document.getElementById('sb').classList.contains('open')) {
+    closeSidebar();
+  }
+}, { passive: true });
+
+// --- Copy buttons for code blocks ---
+function wrapCodeBlocks() {
+  document.querySelectorAll('.prose pre, .stx pre').forEach(pre => {
+    if (pre.closest('.code-block-wrap')) return;
+    const code = pre.querySelector('code');
+    const lang = code && code.className ? code.className.replace('language-', '') : 'bash';
+    const wrap = document.createElement('div');
+    wrap.className = 'code-block-wrap';
+    const bar = document.createElement('div');
+    bar.className = 'code-block-bar';
+    bar.innerHTML = `<span class="code-lang">${lang}</span><button class="copy-btn" onclick="copyCode(this)">📋 Salin</button>`;
+    pre.parentNode.insertBefore(wrap, pre);
+    wrap.appendChild(bar);
+    wrap.appendChild(pre);
+  });
+}
+
+function copyCode(btn) {
+  const pre = btn.closest('.code-block-wrap').querySelector('pre');
+  const text = pre.innerText || pre.textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    btn.classList.add('copied');
+    btn.textContent = '✓ Disalin!';
+    setTimeout(() => {
+      btn.classList.remove('copied');
+      btn.innerHTML = '📋 Salin';
+    }, 2000);
+  }).catch(() => {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    btn.textContent = '✓ Disalin!';
+    setTimeout(() => { btn.innerHTML = '📋 Salin'; }, 2000);
+  });
+}
+
+// --- Init ---
+window.addEventListener('DOMContentLoaded', () => {
+  wrapCodeBlocks();
+  const last = localStorage.getItem('panduan-last');
+  if (last && document.getElementById(last)) go(last);
+});
+</script>
+</body>
+</html>
